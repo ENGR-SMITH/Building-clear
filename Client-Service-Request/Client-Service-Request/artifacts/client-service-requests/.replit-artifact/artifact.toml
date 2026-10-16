@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Client Service Requests"
+description = "A standalone client-facing service request page extracted from the Flip-Sale project. Clients can describe their job, provide contact details, and submit a request."
+version = "1.0.0"
+id = "artifacts/client-service-requests"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20756
+
+[services.development]
+run = "pnpm --filter @workspace/client-service-requests run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/client-service-requests", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/client-service-requests/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20756"
+BASE_PATH = "/"

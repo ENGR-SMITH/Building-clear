@@ -397,3 +397,29 @@ Progress: resolved 614, reused 614, downloaded 0, added 579
 Progress: resolved 614, reused 614, downloaded 0, added 580
 Progress: resolved 614, reused 614, downloaded 0, added 581
 Progress: resolved 614, reused 614, downloaded 0, added 582
+Progress: resolved 614, reused 614, downloaded 0, added 583
+Progress: resolved 614, reused 614, downloaded 0, added 584
+Progress: resolved 614, reused 614, downloaded 0, added 585
+Progress: resolved 614, reused 614, downloaded 0, added 586
+Progress: resolved 614, reused 614, downloaded 0, added 587
+Progress: resolved 614, reused 614, downloaded 0, added 589
+Progress: resolved 614, reused 614, downloaded 0, added 590
+Progress: resolved 614, reused 614, downloaded 0, added 591
+Progress: resolved 614, reused 614, downloaded 0, added 593
+Progress: resolved 614, reused 614, downloaded 0, added 597
+Progress: resolved 614, reused 614, downloaded 0, added 598
+Progress: resolved 614, reused 614, downloaded 0, added 599
+Progress: resolved 614, reused 614, downloaded 0, added 600
+Progress: resolved 614, reused 614, downloaded 0, added 601
+Progress: resolved 614, reused 614, downloaded 0, added 602
+Progress: resolved 614, reused 614, downloaded 0, added 603
+Progress: resolved 614, reused 614, downloaded 0, added 606
+Progress: resolved 614, reused 614, downloaded 0, added 607
+Progress: resolved 614, reused 614, downloaded 0, added 608
+Progress: resolved 614, reused 614, downloaded 0, added 609
+Progress: resolved 614, reused 614, downloaded 0, added 610
+Progress: resolved 614, reused 614, downloaded 0, added 611
+Progress: resolved 614, reused 614, downloaded 0, added 612
+Progress: resolved 614, reused 614, downloaded 0, added 613
+[ERR_PNPM_EPERM] [importPackage E:\BUILDING CLEAR\Bizlit-Landing-Page\Bizlit-Landing-Page\node_modules\.pnpm\hono@4.13.13\node_modules\hono] EPERM: operation not permitted, rename 'E:\BUILDING CLEAR\Bizlit-Landing-Page\Bizlit-Landing-Page\node_modules\.pnpm\hono@4.13.13\node_modules\hono_tmp_6632_1' -> 'E:\BUILDING CLEAR\Bizlit-Landing-Page\Bizlit-Landing-Page\node_modules\.pnpm\hono@4.13.13\node_modules\hono'
+EXIT:1

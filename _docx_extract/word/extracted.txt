@@ -1,0 +1,423 @@
+Distress-Intelligence Operating System
+DISTRESS-INTELLIGENCE OPERATING SYSTEM
+Complete Blueprint, Scoring Models & Operating Documentation — v1.1 (adds Detection Layer platform directory)
+Purpose: one research engine that detects financial distress across asset classes, scores every opportunity, and outputs exactly one decision: BID UNIT, WHOLESALE, CLEANOUT, RUNNER-SCRAP, or PASS.
+Core constraint the system is built around: ~$10 of starting capital. Every deal must be structured as revenue-share, assignment, or pay-after-sale. Nothing requires upfront cash.
+1. System Architecture
+SOURCES → INGEST → LEAD DATABASE → 4 SCORING ENGINES → MASTER ROUTER      → CRM PIPELINE → MONETIZATION ARMS → DEAL LEDGER → CALIBRATION LOOP                              ↕              HUMAN NETWORK (runners, crews, buyers, partners)
+SOURCES — public records, auction/listing photos, sold-price comps, skip-trace vendor, free-section monitors, social signals. All ingestion is automated on a schedule (cron / n8n-style automation). See Section 3 for the full platform directory.
+LEAD DATABASE — one table of leads, each tagged by asset class (storage / real estate / estate / commercial / junk), distress signal, source, owner identity, and pipeline stage.
+SCORING ENGINES — four deterministic scorers (Sections 4–7). Same inputs always produce the same score; the AI does extraction and research, the math is fixed.
+ROUTER — applies thresholds, decides the play, rejects deals (Section 8).
+PIPELINE — lead moves through fixed stages with exit criteria (Section 9).
+MONETIZATION ARMS — scrap floor (same-day cash), resale margin, assignment fees, referral fees, consignment splits.
+LEDGER — every dollar in and out per deal (Section 11).
+CALIBRATION LOOP — predicted vs. realized results feed back into weights and thresholds (Section 13).
+2. Data Sources (summary)
+Source
+Asset class
+What it provides
+Cost
+County assessor / recorder
+Real estate
+Ownership, assessed value, sale history, ARV comps
+$0
+Probate court records
+Estates
+Case, executor, estate description
+$0
+Storage lien-sale notices
+Storage
+Facility, unit, tenant name, sometimes contents hints
+$0
+Secretary of State / UCC filings
+Storage, commercial
+Business entity behind a unit or closure
+$0
+Bankruptcy dockets (PACER)
+Commercial, estates
+Closures, liquidation timing
+$0 / low
+eBay sold listings / Mercari
+All
+Resale price comps per item category
+$0–low
+Facebook Marketplace / OfferUp
+All
+Local demand check, local comps
+$0
+Skip-trace vendor
+All
+Name → current phone/address/entities (licensed use only)
+Per-search
+Vision model
+Storage, estates
+Brand/container detection in photos
+Per-batch
+Google Voice / Workspace / e-sign
+All
+Business comms, contracts
+$0 tier
+3. Detection Layer — Signal Sources & Platforms by Asset Class
+Everything below is public and free unless marked PAID. The qualification gate applies before any paid skip-trace spend: a signal only advances if the asset clears the minimum-value threshold for its class. Log the source platform on every lead — source attribution feeds calibration.
+A. Storage units
+Signal
+Platform / website
+Cost
+Pull cadence
+Units heading to auction
+StorageTreasures.com · LockerFox.com · iBid4Storage.com · SelfStorageAuction.com
+Free to browse
+Daily — photos feed the scoring engine
+Legal lien notices
+County newspaper legal sections; statewide public-notice portals where available
+Free
+Weekly
+Early warning (pre-listing)
+Direct facility-manager relationships — managers know 60–90 days out
+Free (relationship)
+Continuous — they call/email you
+B. Real estate distress
+Signal
+Platform / website
+Cost
+Pull cadence
+Pre-foreclosure (NOD / lis pendens)
+County recorder / clerk portal — locate via NETR Online (netronline.com) county directory
+Free
+Weekly
+Tax delinquency & tax sales
+County treasurer / tax collector site; Auction.com aggregates some tax sales
+Free
+Weekly + sale-calendar sync
+Foreclosure / sheriff auctions
+County sheriff-sale calendar (free) · Auction.com (free to browse) · RealtyTrac (PAID) · Foreclosure.com (PAID)
+Mixed
+Weekly
+Probate & estate cases
+County probate court portal (via NETR directory)
+Free
+Weekly
+Vacant / code-violation properties
+City open-data portals (search "[city] open data") · county assessor for ownership
+Free
+Biweekly
+Ownership & ARV comps
+County assessor · Zillow · Redfin · Realtor.com
+Free
+On lead creation
+Field layer (driving for dollars)
+DealMachine app
+PAID
+As needed
+C. Estates & obituaries
+Signal
+Platform / website
+Cost
+Pull cadence
+Obituaries
+Legacy.com · local newspaper sites · funeral-home websites
+Free
+Daily
+Estate sales in progress
+EstateSales.net
+Free to browse
+Weekly
+Decedent property check
+County assessor name search (cross-reference per obituary)
+Free
+Per obituary batch
+D. Commercial & business closures
+Signal
+Platform / website
+Cost
+Pull cadence
+Business dissolutions
+State Secretary of State business-search portal
+Free
+Weekly
+UCC liens
+State SOS UCC filing search / county filing office
+Free
+Weekly
+Bankruptcies / liquidations
+PACER (pacer.gov)
+~$0.10/page
+Weekly
+Local closure signals
+Google Alerts ("closing" / "going out of business" + city) · local business journal · LinkedIn posts
+Free
+Continuous
+E. Junk & free inventory
+Signal
+Platform / website
+Cost
+Pull cadence
+Free curb items
+Craigslist free section · Facebook Marketplace (free) · Nextdoor · Buy Nothing groups (buynothingproject.org) · Freecycle.org
+Free
+Daily sweep → scrap gate
+Removal requests
+Nextdoor recommendations · local Facebook groups · Craigslist gigs
+Free
+Daily
+F. Identity resolution & contact (after the qualification gate only)
+Function
+Platform / website
+Cost
+Cadence
+Skip tracing
+BatchData · Skip Genie · PropStream (RE-focused) · TLOxp (licensed professionals only)
+PAID per search
+Per qualified lead only
+Contact compliance
+National DNC registry (telemarketing.don.gov) check before calls/texts
+Free
+Per campaign
+Alerts & automation
+Google Alerts · IFTTT / Zapier · n8n for scheduled record pulls
+Free tiers
+Continuous
+4. Storage Unit Scoring Engine
+Pipeline: auction photos → vision extraction (brands, box types, furniture, scrap metal) → eight sub-scores → weighted SCORE → Expected Value (EV) → bid ceiling. The score decides WHETHER to bid; the EV decides HOW MUCH.
+Variable
+Weight
+Scoring rubric (0–100)
+High-value brand visibility
+25
+Snap-on/pro tools, instruments, pro audio, quality golf clubs detected: 80–100 · mid-tier brands: 40–70 · none visible: 0–30
+Container composition
+15
+Sealed uniform retail stock: 90 · uniform moving boxes: 60 · mixed bags/bins: 30 · loose trash: 5
+Facility tier
+15
+Top-quartile historical resale ratio + high-income zip: 90 · median: 50 · bottom quartile: 15
+Scrap floor coverage
+10
+Guaranteed scrap value ≥ 1.5× cleanout cost: 100 · ≈1×: 60 · <0.5×: 10
+Owner/context profile
+10
+Business entity, estate, or mover on lien notice: 80–100 · unknown: 40 · known junk-flipper: 20
+Unit visibility
+10
+>60% of contents visible: 90 · 30–60%: 50 · <30%: 10
+Cleanout complexity (inverse)
+10
+Easy carry: 90 · mattress/paper-heavy: 30 · hazmat/fridges/chemicals: 0
+Auction horizon
+5
+≥7 days to auction: 100 · 3–6 days: 60 · <48h: 20
+SCORE = Σ (weight × sub-score) ÷ 100, range 0–100.
+EV = Σ (detected item × probability it is good × resale comp) + SCRAP FLOOR − CLEANOUT COST − DUMP FEES
+Category probabilities (starting values, calibrate per Section 13): quality tool chest 0.7 · golf clubs 0.6 · electronics 0.5 · furniture 0.45 · sealed retail stock 0.65 · mystery boxes 0.2.
+Worked example: Snap-on chest 0.7×$800=$560 · clubs 0.6×$120=$72 · TV 0.5×$150=$75 · scrap floor $85 → gross $792 − $150 cleanout/dump = EV $642 → bid ceiling = EV × 0.45 = $290. If bidding passes $290, walk away.
+SCORE
+DECISION
+Rule
+70–100
+BID
+Bid up to EV × 0.45 (profit target ≥ 50% net of all costs)
+55–69
+CONDITIONAL BID
+Bid ONLY if scrap floor alone ≥ the bid (downside fully covered)
+40–54
+WATCH
+No bid; re-check post-auction for owner interception or unsold leftovers
+< 40
+PASS
+Log and move on
+Hard vetoes (automatic PASS regardless of score): visible biohazard/waste, drug paraphernalia, flood/water damage, paperwork-only units, firearms unless transfer runs through an FFL dealer, vehicles with unclear title.
+5. Real Estate Wholesale Scoring Engine
+MAO (Maximum Allowable Offer) = ARV × 0.70 − Repair Cost (the 70% rule). Required assignment fee = max($10,000, 10% of contract price). You never buy; you contract at or below MAO minus fee, then assign to a mapped cash buyer.
+Variable
+Weight
+Scoring rubric (0–100)
+Discount to MAO
+30
+Contract achievable ≥ $20k under MAO: 100 · $10–20k under: 70 · at MAO: 40 · above: 0
+Owner motivation evidence
+25
+Probate + out-of-state heir, auction date set, explicit "must sell": 90–100 · mentions selling someday: 30
+Timeline pressure
+15
+Foreclosure/tax sale < 30 days: 100 · 30–90 days: 60 · none: 10
+Title / lien clarity
+15
+Clean title search available: 90 · junior liens only: 50 · title dispute: 0
+Exit liquidity
+15
+≥3 mapped cash buyers match this profile: 100 · 1–2: 60 · 0: 10
+SCORE
+DECISION
+Rule
+75–100
+CONTRACT
+Get assignable purchase contract, $10 earnest money, close assignment within 14 days
+60–74
+OPTION / REFER
+Take an assignable option (nominal consideration) OR refer to a mapped investor for a flat $1–3k referral fee
+< 60
+PASS
+Log comps; revisit on timeline change (new auction date = new score)
+Worked example: ARV $260k, repairs $35k → MAO = $147k. Contract at $137k with motivated probate heir, 2 matched buyers, clean title → SCORE ~80 → CONTRACT. Assignment fee = $10k.
+Hard vetoes: unresolvable title defect, owner refuses in writing, occupant situation beyond legal scope, property in a jurisdiction requiring licensure you do not hold (check state wholesaling/disclosure rules).
+6. Estate / Probate Cleanout Scoring Engine
+EV_contents = Σ (category estimate × resell ratio) − cleanout cost − dump fees. Starting resell ratios: tools 0.60 · electronics 0.50 · furniture 0.40 · kitchen/household 0.20 · clothing 0.10 · antiques/collectibles: case-by-case with specialist comps.
+Variable
+Weight
+Scoring rubric (0–100)
+Estimated contents EV
+35
+≥$5k: 100 · $2–5k: 70 · $800–2k: 40 · <$800: 10
+Executor urgency & cooperation
+20
+Wants it handled this month, signs authorization: 90 · hesitant: 40
+Resale density (category mix)
+20
+Tools/equipment/collectibles heavy: 90 · furniture/paper heavy: 40
+Access & logistics
+15
+Ground floor, nearby, no dumpster needed: 90 · stairs + dumpster rental: 30
+Timeline constraint
+10
+House closing date forces action: 100 · flexible: 40
+EV_contents & SCORE
+DECISION
+Structure
+EV ≥ $2,000 AND net-to-us ≥ $800
+CLEANOUT-CONSIGN
+We clear free, act as liquidation agent, remit heirs 80–90% of net resale
+EV $800–2,000
+HYBRID
+Scrap engine covers logistics; we keep resale margin only
+EV < $800
+PASS / REFER
+Refer to junk partner for $50–100 referral fee
+Hard vetoes: unresolved dispute among heirs, no signed authorization letter, biohazard-level hoarding (requires licensed remediation — refer out, do not attempt).
+7. Junk / Scrap Cash Engine (runner fuel)
+Purpose: same-day cash that pays the physical network so nothing else needs upfront money. Gate rule: RUN only if scrap_estimate ≥ 1.5 × (runner payout + dump fees) AND pickup is inside the service radius. Sources: junk-removal requests ("free removal"), free-section curb alerts, overflow from cleanouts and units. Anything resellable is pulled before the scrap run. Scrap yards pay same day; runner is paid same day from that cash.
+8. Master Router
+New lead  ├─ Is it a storage unit?        → Storage Engine → BID / CONDITIONAL / WATCH / PASS  ├─ Is it a property?            → RE Engine      → CONTRACT / OPTION / PASS  ├─ Is it an estate/household?   → Estate Engine  → CLEANOUT / HYBRID / PASS  ├─ Is it bulk junk/metal?       → Scrap gate     → RUN / PASS  └─ Multi-asset (e.g., owner has house + unit + car)?        → score each, then price as a PACKAGE — bundle discount to owner,          combined EV usually beats summed individual EVs
+Router rules: (1) a PASS at any tier can be overridden only by a hard-number reason logged in the lead record; (2) every WATCH lead auto-re-scores when its timeline event fires (auction date, foreclosure date, house closing); (3) anything marginal goes to scrap gate check before final pass — a $90 scrap floor can rescue a mediocre unit.
+9. CRM Pipeline Stages (every lead, every class)
+Stage
+Definition
+Exit criteria
+1. Detected
+Signal captured, in DB
+Identity resolved
+2. Researched
+Owner profile + comps pulled
+Score computed
+3. Contacted
+First professional outreach sent
+Reply or 3 attempts / 7 days
+4. Negotiating
+Terms in discussion
+Agreement in principle
+5. Under Contract / Transfer
+Signed agreement (contract, contents transfer, or cleanout authorization)
+Deal executed
+6. Monetizing
+Items listed / scrap run / assignment marketed
+Cash collected
+7. Settled
+All parties paid, ledger closed
+Realized numbers logged
+8. Dead
+Rejected or unresponsive
+Reason code recorded (feeds calibration)
+10. Human Network & Pay Structures
+Role
+Pay structure
+Where found
+Runners
+30–40% of deal net, same-day on scrap runs
+Student groups, gig boards, TaskRabbit
+Cleanout crews
+Revenue share per job or per-day from proceeds
+Runner pool promotion, day-labor boards
+Cash buyers (RE)
+Pay your assignment fee at closing
+Local investor meetups, REIA, Facebook groups
+Estate attorneys / Realtors
+Mutual referral fees
+Outreach with pipeline value proposition
+Title company / real estate attorney
+Per closing
+Pick one early, standardize on them
+Storage facility managers
+20% remit on flipped units or goodwill + free cleanouts
+Walk-ins with the cleanout pitch
+Scrap yard
+Instant cash for metal/e-waste
+One primary + one backup, always
+Network rule: nobody is ever paid upfront. Pay fast, pay exactly what was promised, publish the payout math. The network IS the business.
+11. Money Flow & Deal Ledger
+All buyer payments route to the business account (WHOP PAYEMENT GATEWAY→ business checking as soon as volume justifies).
+Owner/heir remittance goes out on delivery confirmation; runner/crew same day; your margin stays in the float.
+Ledger fields per deal: deal_id · class · EV predicted · all costs (haul, dump, boost, fees) · gross · splits · realized margin · days to cash.
+Expense float comes ONLY from scrap revenue — never from the $10 reserve.
+Weekly reconciliation; any deal with realized margin < 25% of predicted gets a reason code for calibration.
+13. Calibration Loop (how the system gets smarter)
+Log predicted EV vs. realized result for every deal, per category. Monthly: compute error (MAPE). Rules:
+Category MAPE > 30% → lower that category's probability and widen margin factor (bid multiplier 0.45 → 0.35) until error recovers.
+Category consistently beats prediction → raise probability, tighten margin, bid more aggressively.
+Any category with 3+ consecutive negative realized margins → auto-PASS category pending manual review.
+Facility tiers re-ranked quarterly from realized resale ratios.
+Dead-reason codes reviewed monthly — if "overbid at auction" dominates, raise bid discipline; if "no reply" dominates, fix outreach scripts.
+14. KPIs
+KPI
+Target (first 90 days)
+Leads detected / week (all classes)
+40+
+Contact → reply rate
+≥ 15%
+Reply → signed deal
+≥ 10%
+Avg fee per closed deal
+Storage $150+ · RE $7.5k+ · Estate $800+
+EV accuracy (MAPE)
+< 30%
+Runner job completion
+≥ 95%
+Days from lead to cash
+≤ 21
+15. Weekly Operating Rhythm
+Mon: sourcing review — new signals per Section 3 cadences, re-scores on timeline events, auction calendar.
+Tue–Thu: outreach blocks (mornings), monetization blocks (listings, scrap runs, buyer matching).
+Fri: settlements, runner payouts, ledger reconciliation, calibration numbers pulled.
+Weekend: physical ops window (cleanouts, pickups, meetups) + next-week pipeline staging.
+16. Tooling Stack
+Function
+Free tier
+Lead DB / CRM
+Airtable
+Automation / monitors
+n8n CLOUD
+Comms
+Google Voice, Gmail
+Contracts / e-sign
+DocuSign
+Payments
+WHOP
+Photo analysis
+vision API credits
+Comps (RE)
+county records, Zillow/Redfin
+Comps (resale)
+eBay sold, Marketplace, Terapeak (eBay seller hub) is free
+Skip tracing
+Skip Genie
+Appendix A — Outreach Scripts (short forms)
+Storage tenant (pre-auction): "You have a unit heading to lien sale. At auction you get $0 and still owe fees. I'll clear it, handle everything, and you keep 25% of resale. Written agreement, facility coordinated. Better than zero?"
+Facility manager: "I clear abandoned units to broom-clean in 48h and remit you 20% of resale. You stop paying dump fees and get the unit rentable again. Can we pilot on your next unit?"
+Estate executor: "I know you have a house to close out. My team clears it free, sells what's sellable, and remits 85% of net. You sign one authorization and it's handled."
+Distressed homeowner: "I'm not an agent — I buy via assignment with local cash investors. If your numbers work, I can have an offer this week and you pay zero commissions."
+Runner recruitment: "Flexible pickup gig, paid same day from each job. No upfront anything — you get 30–40% of what your run nets. Students and drivers welcome."
+IMPLEMENTATION OF THE RETRIEVAL OF INFO FROM THE Data Sources
+_Implement the use of NECESSARY API OR  scrappers (APIFY) ON PLTAFORM OR WEBSITES TO GET AND RETREIVE UPDATES FROM all those platforms NEEDED for info source Detection Layer — Signal Sources & Platforms by Asset Class
+_ORGANISED AND SEPERATE Dashboard SECTION FOR EACH OF THE the classes
+_THE RETREIVAL OF their contacts to send professional MESSAGE ON OFFFERING OUR SERVICE
+proposal ads of our services and why they should let us handle it for them
+_WE ARE TO HAVE A PAGE WHERE I CAN SEE THE AVAILABLE PEOPLE WHO ARE AROUND THAT PROXIMITY OF THE JOB LOCATION FOR THE physical ops window (cleanouts, pickups, meetups) + next-week pipeline staging SO WE CAN HIRE THEM AND HIRE THEM TO MAKE A DEAL
