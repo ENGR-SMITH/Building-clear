@@ -9,10 +9,15 @@ import Footer from "@/components/templates/odoo/footer";
 
 /*
  * The landing page, rebuilt to odoo.com's design: the flat white header, the
- * handwriting-weight hero, then a run of grey bands (sources grid, what the
- * desk does, the level-up cards, the workspace screenshots), a white AI band,
- * the arched "done right" band carrying the plan, social proof, the FAQ, and
- * the closing call to action above the aubergine footer.
+ * handwriting-weight hero, then a run of grey bands (the signal wall, what the
+ * desk does, the level-up panels, the workspace screens), a white AI band, the
+ * arched "done right" band carrying the plan, social proof, the FAQ, and the
+ * closing call to action above the aubergine footer.
+ *
+ * It is pitched for the distress-intelligence operating desk: sources swept on
+ * cadence, four scoring engines and a master router, one decision per lead —
+ * bid, wholesale, cleanout, runner-scrap or pass — and revenue-share
+ * monetization that never needs upfront cash.
  *
  * The skin lives in `.theme-odoo` (src/index.css) so none of it reaches the
  * signed-in workspace, and every section it composes is in
@@ -21,24 +26,28 @@ import Footer from "@/components/templates/odoo/footer";
 
 const FAQ: FaqItem[] = [
   {
-    q: "Which competitors can it watch?",
-    a: "Any rival with a website — a shopfront, a trade site or a brand catalogue. You add each one during setup and choose how often it is checked.",
+    q: "Which assets does it cover?",
+    a: "Five classes: storage units heading to lien sale, distressed real estate, estates and probate property, commercial closures, and bulk junk or scrap. Every lead is tagged, scored and routed by its own class engine.",
   },
   {
-    q: "How often does it scan?",
-    a: "Per source: daily, weekly or monthly. Daily feeds catch price and stock moves fastest, while weekly and monthly sources are scanned in one batch and summarised.",
+    q: "How do the scoring engines work?",
+    a: "Each class has its own weighted rubric — brand visibility, container composition, owner motivation, title clarity and so on. The math is fixed: the same inputs always produce the same score, and the router turns the score into bid, conditional bid, contract, cleanout, scrap run or pass.",
   },
   {
-    q: "Do my customers see competitor intelligence?",
-    a: "No. Competitor alerts stay internal to your desk. You pick what goes out to customers from new stock, deals, check-ins, review updates and the weekly report.",
+    q: "What does it cost to run a deal?",
+    a: "Nothing upfront. Every deal is structured as a revenue share, a wholesaling assignment fee, or pay-after-sale — and the same-day scrap floor pays the runners and crews first so the operation never needs capital.",
   },
   {
-    q: "Does it send the emails for me?",
-    a: "Yes. Alerts go out from the mailbox you configure, with your own signature, and every send is logged so you can see what each customer received.",
+    q: "What do owners and heirs actually get?",
+    a: "A written agreement and a plain-English deal: storage tenants keep a share of resale instead of getting nothing at auction, estates are cleared for free with 80–90% of net proceeds remitted, and homeowners get a cash offer through mapped investors with zero commissions.",
   },
   {
-    q: "I sell on a marketplace, not my own site.",
-    a: "Tell the wizard where you sell. Your scores, traffic and competitor comparisons are tracked against whichever surface you actually trade on.",
+    q: "Do you handle everything encountered?",
+    a: "No. Hard vetoes out regardless of the score: biohazards, unresolvable title defects, jurisdictions requiring licensure we don't hold. Those leads get logged, code-recorded and passed to a partner.",
+  },
+  {
+    q: "How do the runners and crews get paid?",
+    a: "On the day the job pays. Scrap yards settle same-day, runners take 30–40% of what each run nets, and nobody is ever paid upfront. Every payout's math is published in the deal ledger.",
   },
 ];
 

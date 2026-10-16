@@ -13,99 +13,91 @@ import { Container } from "./bits";
  * The icons are the reference's own: every Odoo app module ships
  * `static/description/icon.svg`, which is what odoo.com serves from
  * download.odoocdn.com — not a packaged icon library. They are paired here
- * with the businesses this desk gets run for, so the captions and the marker
- * writing are ours while the artwork and every measurement are the reference's.
+ * with the asset classes and signal sources the distress desk sweeps, so the
+ * captions and the marker writing are ours while the artwork and every
+ * measurement are the reference's.
  */
 
-/** One tile: the reference's app icon over one of the businesses we run it for. */
+/** One tile: the reference's app icon over one of the asset classes we run. */
 type Source = { slug: string; label: string };
 
 export const SOURCES: Source[] = [
-  { slug: "accountant", label: "Beauty retail" },
-  { slug: "knowledge", label: "Fashion boutiques" },
-  { slug: "sign", label: "Phone shops" },
-  { slug: "crm", label: "Electronics" },
-  { slug: "web_studio", label: "Print & design" },
-  { slug: "sale_subscription", label: "Subscriptions" },
-  { slug: "ai_app", label: "Home appliances" },
-  { slug: "point_of_sale", label: "Market stalls" },
-  { slug: "mail", label: "Auto parts" },
-  { slug: "documents", label: "Pharmacies" },
-  { slug: "project", label: "Salons & spas" },
-  { slug: "hr_timesheet", label: "Gyms & studios" },
-  { slug: "industry_fsm", label: "Field services" },
-  { slug: "planning", label: "Furniture" },
-  { slug: "helpdesk", label: "Local grocers" },
-  { slug: "website_sale", label: "Online stores" },
-  { slug: "website", label: "Restaurants" },
-  { slug: "mass_mailing", label: "Cafés & bakeries" },
-  { slug: "purchase", label: "Wholesale" },
-  { slug: "stock", label: "Hardware" },
-  { slug: "mrp", label: "Manufacturers" },
-  { slug: "sale", label: "Supermarkets" },
-  { slug: "hr", label: "Agencies" },
-  { slug: "spreadsheet_dashboard", label: "Logistics" },
+  { slug: "accountant", label: "Storage units" },
+  { slug: "knowledge", label: "Storage auctions" },
+  { slug: "sign", label: "Self-storage liens" },
+  { slug: "crm", label: "Real estate" },
+  { slug: "web_studio", label: "Pre-foreclosures" },
+  { slug: "sale_subscription", label: "Tax delinquency" },
+  { slug: "ai_app", label: "Sheriff sales" },
+  { slug: "point_of_sale", label: "Probate estates" },
+  { slug: "mail", label: "Obituaries" },
+  { slug: "documents", label: "Estate sales" },
+  { slug: "project", label: "Executors & heirs" },
+  { slug: "hr_timesheet", label: "Business closures" },
+  { slug: "industry_fsm", label: "Dissolutions" },
+  { slug: "planning", label: "UCC liens" },
+  { slug: "helpdesk", label: "Bankruptcies" },
+  { slug: "website_sale", label: "Free sections" },
+  { slug: "website", label: "Junk removals" },
+  { slug: "mass_mailing", label: "Curb alerts" },
+  { slug: "purchase", label: "Scrap metal" },
+  { slug: "stock", label: "E-waste" },
+  { slug: "mrp", label: "Tools & equipment" },
+  { slug: "sale", label: "Furniture lots" },
+  { slug: "hr", label: "Electronics" },
+  { slug: "spreadsheet_dashboard", label: "Vehicles & titles" },
 ];
 
 /*
  * What the switch writes over the wall: the tools this desk replaces — ours,
  * not Odoo's list — each one hanging off the arrow that the reference draws for
- * that spot. The arrows are the reference's own strokes, lifted out of its
- * `apps_switched.svg` (odoo.com/openerp_website/static/src/img/apps/home/) and
- * set at the reference's own coordinates, so every head points at the tile Odoo
- * points it at; we only swap the writing. Fourteen of the sheet's seventeen
- * arrows came across — one per name below — and its lettering did not.
- *
- * Each label below therefore sits on the centre of the name the reference
- * writes beside that arrow, as a percentage of the tile row itself, so a name
- * keeps its arrow at every width. `left`/`top` are those centres.
+ * that spot. Fourteen of the sheet's seventeen arrows came across — one per
+ * name below — and its lettering did not.
  */
 type Mark = { label: string; x: number; y: number; align?: "left" | "right" };
 
 const MARKS: Mark[] = [
-  { label: "Semrush", x: -4.39, y: -2.98 },
-  { label: "Hootsuite", x: -6.23, y: 26.59 },
-  /* `Service cloud` is two lines in the reference, so its arrow head sits right
-     of the name: ours is one line and would run into it, hence the right edge. */
-  { label: "Trustpilot", x: -4.1, y: 64.08, align: "right" },
-  { label: "Klaviyo", x: 15.45, y: 46.9 },
-  { label: "Photoshop", x: 111.2, y: 2.62 },
-  { label: "Analytics", x: 111.1, y: 31.42 },
-  { label: "Canva", x: 110.59, y: 54.23 },
+  { label: "Auction calendars", x: -4.39, y: -2.98 },
+  { label: "Skip-trace sheets", x: -6.23, y: 26.59 },
+  { label: "PACER tabs", x: -4.1, y: 64.08, align: "right" },
+  { label: "Legacy.com", x: 15.45, y: 46.9 },
+  { label: "Zillow tabs", x: 111.2, y: 2.62 },
+  { label: "Auction.com", x: 111.1, y: 31.42 },
+  { label: "eBay solds", x: 110.59, y: 54.23 },
   { label: "Spreadsheets", x: 107.82, y: 93.85 },
-  { label: "SimilarWeb", x: 14.39, y: -7.09 },
-  { label: "DocuSign", x: 37.52, y: -3.6 },
-  { label: "Ahrefs", x: 90.17, y: -3.25 },
-  { label: "Google Ads", x: 33.9, y: 103.84 },
-  { label: "Mailchimp", x: 31.51, y: 71.8 },
-  { label: "Email + Excel", x: 81.95, y: 101.0 },
+  { label: "StorageTreasures", x: 14.39, y: -7.09 },
+  { label: "Comp printouts", x: 37.52, y: -3.6 },
+  { label: "NETR Online", x: 90.17, y: -3.25 },
+  { label: "DNC checks", x: 33.9, y: 103.84 },
+  { label: "OfferUp sweeps", x: 31.51, y: 71.8 },
+  { label: "Craigslist + Excel", x: 81.95, y: 101.0 },
 ];
 
 /* The pill's content, by country. Odoo shows whichever of its events is
-   nearest; ours lists the shows we run, keyed by ISO country code. */
+   nearest; ours lists the auction weeks we cover, keyed by ISO country code. */
 type Event = { place: string; date: string };
 
 const EVENTS: Record<string, Event> = {
-  NG: { place: "Business Show Lagos", date: "Oct 13, 2026" },
-  GH: { place: "Business Show Accra", date: "Nov 3, 2026" },
-  KE: { place: "Business Show Nairobi", date: "Nov 10, 2026" },
-  ZA: { place: "Business Show Cape Town", date: "Nov 24, 2026" },
-  GB: { place: "Business Show London", date: "Dec 1, 2026" },
-  IE: { place: "Business Show Dublin", date: "Dec 3, 2026" },
-  US: { place: "Business Show New York", date: "Dec 8, 2026" },
-  CA: { place: "Business Show Toronto", date: "Jan 19, 2027" },
-  IN: { place: "Business Show Mumbai", date: "Jan 26, 2027" },
-  AE: { place: "Business Show Dubai", date: "Feb 2, 2027" },
-  SG: { place: "Business Show Singapore", date: "Feb 9, 2027" },
-  AU: { place: "Business Show Sydney", date: "Feb 16, 2027" },
-  DE: { place: "Business Show Berlin", date: "Mar 2, 2027" },
-  FR: { place: "Business Show Paris", date: "Mar 9, 2027" },
-  NL: { place: "Business Show Amsterdam", date: "Mar 11, 2027" },
-  BR: { place: "Business Show São Paulo", date: "Mar 16, 2027" },
+  NG: { place: "Storage Auction Week Lagos", date: "Oct 13, 2026" },
+  GH: { place: "Storage Auction Week Accra", date: "Nov 3, 2026" },
+  KE: { place: "Storage Auction Week Nairobi", date: "Nov 10, 2026" },
+  ZA: { place: "Storage Auction Week Cape Town", date: "Nov 24, 2026" },
+  GB: { place: "Storage Auction Week London", date: "Dec 1, 2026" },
+  IE: { place: "Storage Auction Week Dublin", date: "Dec 3, 2026" },
+  US: { place: "Storage Auction Week New York", date: "Dec 8, 2026" },
+  CA: { place: "Storage Auction Week Toronto", date: "Jan 19, 2027" },
+  IN: { place: "Storage Auction Week Mumbai", date: "Jan 26, 2027" },
+  AE: { place: "Storage Auction Week Dubai", date: "Feb 2, 2027" },
+  SG: { place: "Storage Auction Week Singapore", date: "Feb 9, 2027" },
+  AU: { place: "Storage Auction Week Sydney", date: "Feb 16, 2027" },
+  DE: { place: "Storage Auction Week Berlin", date: "Mar 2, 2027" },
+  FR: { place: "Storage Auction Week Paris", date: "Mar 9, 2027" },
+  NL: { place: "Storage Auction Week Amsterdam", date: "Mar 11, 2027" },
+  BR: { place: "Storage Auction Week São Paulo", date: "Mar 16, 2027" },
 };
 
 /* The reference card, for anywhere we have no show of our own. */
-const FALLBACK: Event = { place: "Business Show Lagos", date: "Oct 13, 2026" };
+const FALLBACK: Event = { place: "Storage Auction Week Lagos", date: "Oct 13, 2026" };
 
 /** Timezone -> country, so the pill answers to where the clock is, not the IP. */
 const TZ_COUNTRY: Record<string, string> = {
@@ -213,7 +205,7 @@ function DigestPill() {
         href="#pricing"
         className="od-stretched text-nowrap text-[var(--od-violet)] no-underline md:mx-[1rem] lg:ms-[3rem]"
       >
-        Register ⟶
+        Get the leads ⟶
       </a>
     </div>
   );
@@ -331,7 +323,7 @@ export default function SourcesBand() {
           </div>
           <div className="w-full pt-[40px] text-end min-[1200px]:w-1/2">
             <a href="#screens" className="text-[var(--od-violet)] no-underline">
-              View all Apps
+              View all signals
               <img
                 src="/img/odoo/secondary_arrow_sm_03.svg"
                 width={40}

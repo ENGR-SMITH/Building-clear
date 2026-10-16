@@ -1,25 +1,17 @@
 import {
-  BadgeCheck,
   BellRing,
-  ChevronDown,
+  BadgeCheck,
   ClipboardList,
-  FileText,
-  ImagePlus,
+  Gavel,
   Mail,
-  MessageSquareQuote,
   Radar,
-  Search,
-  Send,
-  Share2,
+  Recycle,
   ShieldCheck,
-  Sparkles,
+  Truck,
   Wallet,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Badge } from "@/components/primitives";
-import { Stars } from "@/components/charts";
-import { sampleWorkspace } from "@/data/sample";
-import { compact, relativeTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Band, Container, Doodle, Mark, Underline, odBtn, odBtnLight } from "./bits";
 
@@ -40,8 +32,8 @@ import { Band, Container, Doodle, Mark, Underline, odBtn, odBtnLight } from "./b
  * Odoo puts a quotation above the company artwork in the card under the
  * sources wall; we keep the card, the two-column split and the mark on the
  * right, and put the product's own list where the quotation was — one icon
- * tile per thing the desk does, in the order the workspace does them, beside
- * the rail that names the desk and the numbers it works on.
+ * tile per thing the desk does, in the order the pipeline runs: detect,
+ * research, score, route, contact, monetize.
  */
 type Tone = "violet" | "orchid" | "indigo" | "fuchsia" | "gold";
 
@@ -57,51 +49,51 @@ const FEATURE_TONES: Record<Tone, string> = {
 const FEATURES: { icon: ReactNode; label: string; note: string; tone: Tone }[] = [
   {
     icon: <Radar size={17} />,
-    label: "Competitor watch",
-    note: "Prices, stock and live campaigns, captured on the cadence you set",
+    label: "Signal sweep",
+    note: "Storage lien lists, recorder notices, probate dockets and free sections, pulled on a set cadence",
     tone: "violet",
   },
   {
-    icon: <Search size={17} />,
-    label: "Search & AI answers",
-    note: "SEO score, keyword positions and GEO visibility, rescored weekly",
+    icon: <ClipboardList size={17} />,
+    label: "Four scoring engines",
+    note: "Storage, wholesale, estate and scrap math that is fixed — same inputs, same score, every time",
     tone: "orchid",
   },
   {
-    icon: <ClipboardList size={17} />,
-    label: "One buy list",
-    note: "Supplier and marketplace prices folded into a single sheet",
+    icon: <Gavel size={17} />,
+    label: "The master router",
+    note: "Every lead leaves with one play: bid, wholesale, cleanout, runner-scrap or pass",
     tone: "gold",
   },
   {
     icon: <Mail size={17} />,
-    label: "Client emails",
-    note: "New stock, deals, check-ins and the weekly report, sent from your own mailbox",
+    label: "Owner outreach",
+    note: "Storage tenants, executors and homeowners get a plain-English offer before anything else happens",
     tone: "indigo",
   },
   {
-    icon: <MessageSquareQuote size={17} />,
-    label: "Review scans",
-    note: "What needs an answer is flagged with the reply already drafted",
+    icon: <Truck size={17} />,
+    label: "Cleanout crews",
+    note: "Estates cleared free, resold as agent, with heirs remitted 80–90% of net proceeds",
     tone: "fuchsia",
   },
   {
-    icon: <ImagePlus size={17} />,
-    label: "Briefs to banners",
-    note: "Ad briefs turned into banner designs you download and post",
-    tone: "orchid",
-  },
-  {
-    icon: <Share2 size={17} />,
-    label: "Social tracking",
-    note: "Competitor profiles watched for followers, posting cadence and engagement",
+    icon: <Recycle size={17} />,
+    label: "Scrap floor",
+    note: "Same-day cash runs that fund the whole operation — runners paid the day the yard pays us",
     tone: "violet",
   },
   {
     icon: <BellRing size={17} />,
-    label: "One notifications desk",
-    note: "Everything that changed, ranked in the order it matters",
+    label: "Watchlist re-scores",
+    note: "Every timeline event — auction date, foreclosure date, house closing — wakes its lead and rescores it",
     tone: "indigo",
+  },
+  {
+    icon: <Wallet size={17} />,
+    label: "Deal ledger & calibration",
+    note: "Predicted vs. realized on every deal, feeding the category probabilities each month",
+    tone: "orchid",
   },
 ];
 
@@ -123,8 +115,9 @@ export function FeaturesBand() {
               </h3>
 
               <p className="mt-[0.75rem] max-w-[42rem] text-[1rem] leading-relaxed text-[var(--od-body)]">
-                Every source we watch lands in one place and is ranked by what changed, on the
-                cadence you set.
+                Every distress signal lands in one place, gets scored by fixed math and comes
+                out the other end with a single play attached — nothing sits around as a vague
+                maybe.
               </p>
             </div>
 
@@ -173,78 +166,23 @@ export function FeaturesBand() {
 /* --------------------------------------------------------------- level up */
 
 /*
- * The screens are real captures of the workspace (the same layouts the
- * screens band renders, shot at two widths) — odoo.com puts a product video
- * here, we put the product itself.
+ * The screens band below shows the workspace; this band is odoo.com's collage
+ * band, so it carries four small panels of the same desk instead — each drawn
+ * from the lead pipeline's own shape rather than stock imagery.
  */
-const SHOTS = {
-  clients: "/img/app/clients.png",
-  competition: "/img/app/competition.png",
-  business: "/img/app/business.png",
-  detail: "/img/app/detail.png",
-};
-
-/** The four cells of Odoo's 12 × 16 collage, placed exactly as it places them. */
-const CELLS: { src: string; area: string; alt: string; className?: string }[] = [
-  {
-    src: SHOTS.clients,
-    area: "3 / 3 / 15 / 11",
-    alt: "The BIZLIT clients screen with the customer list",
-    className: "object-center",
-  },
-  {
-    src: SHOTS.competition,
-    area: "9 / 1 / 18 / 9",
-    alt: "The BIZLIT competition screen with a rival's traffic sources and live campaigns",
-    className: "object-left",
-  },
-  {
-    src: SHOTS.business,
-    area: "5 / 9 / 17 / 13",
-    alt: "The BIZLIT business screen with SEO and GEO scores and tracked keywords",
-  },
-  {
-    src: SHOTS.detail,
-    area: "1 / 1 / 9 / 4",
-    alt: "Traffic sources for a tracked competitor",
-  },
-];
-
-/*
- * What the screens above are actually for, one card each — and every card is
- * another screen of the product, drawn from the sample workspace's own rows so
- * a mock cannot drift from what the app really shows: the outbox with the
- * emails that went out, the review the scan flagged with the draft the composer
- * opens with, the two ad briefs and the design they produced, and the profiles
- * the daily scan watches.
- */
-const DEMO = sampleWorkspace();
-const OUTBOX = DEMO.sentMessages.slice(0, 3);
-const FLAGGED_REVIEW =
-  DEMO.latestReviewScan.items.find((review) => review.isFlagged) ?? DEMO.latestReviewScan.items[0];
-const TRACKED_PROFILES = DEMO.socialMonitorTargets.map((target) => {
-  const competitor = DEMO.competitors.find((c) => c.id === target.competitorId);
-  const channel = competitor?.social.find(
-    (s) => s.handle.toLowerCase() === target.handle.toLowerCase(),
-  );
-  return { target, competitor, channel };
-});
 
 /** The strip every workspace card wears: its icon, its title, one chip. */
 function ScreenHead({
-  icon,
   title,
   chip,
   tone = "neutral",
 }: {
-  icon: ReactNode;
   title: string;
   chip: string;
   tone?: "neutral" | "good" | "warn" | "bad" | "info" | "brand";
 }) {
   return (
     <div className="flex items-center gap-[0.375rem] border-b border-slate-100 pb-[0.375rem]">
-      <span className="text-slate-400">{icon}</span>
       <span className="text-[0.6875rem] font-semibold text-slate-900">{title}</span>
       <Badge tone={tone} className="ms-auto">
         {chip}
@@ -260,186 +198,141 @@ const MOCK_ROW =
 /*
  * `area` is the cell, `shift` nudges it over its neighbour, and `z` decides
  * who lies on top where the two mats meet — the same tuck Odoo's own cells get
- * from their overlapping spans. Each cell is only as tall as the screen drawn
- * in it plus the strip the overlaps need, so no card carries empty mat, and
- * every nudge stays inside that strip rather than over another card's rows.
+ * from their overlapping spans.
  */
 const PANELS: { title: string; area: string; z: number; shift?: string; body: ReactNode }[] = [
   {
-    title: "Emailing",
+    title: "Scoring",
     area: "7 / 7 / 14 / 13",
     z: 9,
     shift: "-ml-[3rem]",
     body: (
       <div className="text-[0.6875rem]">
-        <ScreenHead icon={<Send size={13} />} title="Client emails" chip="Weekly cadence" />
+        <ScreenHead title="Storage engine" chip="Score 81" tone="good" />
 
         <ul className="mt-[0.5rem] space-y-[0.375rem]">
-          {OUTBOX.map((message) => (
-            <li key={message.id} className={MOCK_ROW}>
+          {[
+            ["Brand visibility", "94", "Snap-on chest, pro audio"],
+            ["Container mix", "60", "Uniform moving boxes"],
+            ["Scrap floor cover", "100", "≥ 1.5× cleanout cost"],
+          ].map(([label, score, note]) => (
+            <li key={label} className={MOCK_ROW}>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-[0.6875rem] font-medium text-slate-900">
-                  {message.subject}
+                  {label}
                 </span>
-                <span className="block truncate text-[0.625rem] text-slate-500">
-                  {message.clientName} · {relativeTime(message.sentAt)}
-                </span>
+                <span className="block truncate text-[0.625rem] text-slate-500">{note}</span>
               </span>
-              <Badge
-                tone={
-                  message.status === "bounced"
-                    ? "bad"
-                    : message.status === "delivered"
-                      ? "neutral"
-                      : "good"
-                }
-              >
-                {message.status}
-              </Badge>
+              <span className="shrink-0 rounded-full bg-[rgba(168,85,247,0.14)] px-[0.375rem] py-[0.0625rem] text-[0.625rem] font-semibold text-[var(--od-accent)]">
+                {score}
+              </span>
             </li>
           ))}
         </ul>
 
         <p className="mt-[0.5rem] text-[0.625rem] text-slate-500">
-          8 sent this week · 6 opened or clicked
+          EV $642 → bid ceiling EV × 0.45 = <strong>$290</strong>
         </p>
       </div>
     ),
   },
   {
-    title: "Review reading & replying",
+    title: "Router",
     area: "7 / 1 / 14 / 7",
     z: 8,
     shift: "ml-[2.5rem]",
     body: (
       <div className="text-[0.6875rem]">
-        <ScreenHead
-          icon={<MessageSquareQuote size={13} />}
-          title="Review scan"
-          chip={`${DEMO.latestReviewScan.flagged} flagged`}
-          tone="bad"
-        />
+        <ScreenHead title="Master router" chip="1 decision" tone="brand" />
 
-        <div className="mt-[0.5rem] rounded-[0.5rem] border border-slate-200 p-[0.5rem]">
-          <div className="flex items-center gap-[0.375rem]">
-            <Stars rating={FLAGGED_REVIEW.rating} size={11} />
-            <span className="text-[0.6875rem] font-medium text-slate-900">
-              {FLAGGED_REVIEW.author}
-            </span>
-            <span className="truncate text-[0.625rem] text-slate-500">
-              {FLAGGED_REVIEW.source}
-            </span>
-          </div>
-          <p className="mt-[0.25rem] text-[0.625rem] leading-snug text-slate-600">
-            {FLAGGED_REVIEW.text}
-          </p>
-        </div>
-
-        <div className="mt-[0.5rem] rounded-[0.5rem] border border-dashed border-slate-300 bg-slate-50 p-[0.5rem]">
-          <p className="text-[0.5625rem] tracking-wide text-slate-500 uppercase">Reply draft</p>
-          <p className="mt-[0.125rem] text-[0.625rem] leading-snug text-slate-700">
-            {FLAGGED_REVIEW.action}
-          </p>
-        </div>
-
-        <p className="mt-[0.5rem] text-[0.625rem] text-slate-500">
-          Drafts wait for your yes before anything sends
-        </p>
-      </div>
-    ),
-  },
-  {
-    title: "Ads graphics banners",
-    area: "1 / 1 / 8 / 7",
-    z: 2,
-    body: (
-      <div className="text-[0.6875rem]">
-        <ScreenHead
-          icon={<Sparkles size={13} />}
-          title="Promotions"
-          chip={`${DEMO.deliveredAds.length} delivered`}
-          tone="good"
-        />
-
-        <div className="mt-[0.5rem] flex items-end gap-[0.5rem]">
-          {DEMO.promotionBriefs.map((brief) => (
-            <figure key={brief.id} className="min-w-0 flex-1">
-              <div
-                style={{
-                  background: `linear-gradient(135deg, ${brief.accentColor} 0%, ${brief.accentColor}cc 100%)`,
-                }}
-                className={`flex flex-col justify-between rounded-[0.5rem] p-[0.5rem] text-white ${
-                  brief.template === "story" ? "h-[5.25rem]" : "h-[3.75rem]"
-                }`}
+        <div className="mt-[0.5rem] space-y-[0.375rem]">
+          {[
+            ["Storage unit — 81", "BID to $290"],
+            ["Property — 80", "CONTRACT · fee $10k"],
+            ["Estate — 72", "CLEANOUT-CONSIGN"],
+            ["Bulk junk", "RUN · scrap 1.6× cost"],
+            ["Commercial — 38", "PASS · logged"],
+          ].map(([lead, play]) => (
+            <div key={lead} className={MOCK_ROW}>
+              <span className="min-w-0 flex-1 truncate text-[0.6875rem] font-medium text-slate-900">
+                {lead}
+              </span>
+              <Badge
+                tone={play.startsWith("PASS") ? "neutral" : play.startsWith("RUN") ? "info" : "good"}
               >
-                <span className="truncate text-[0.5625rem] tracking-wide uppercase opacity-90">
-                  {brief.headline}
-                </span>
-                <span className="text-[0.8125rem] leading-tight font-bold">
-                  {brief.discountKind === "percent"
-                    ? `${brief.discountValue}% off`
-                    : `$${brief.discountValue} off`}
-                </span>
-                <span className="text-[0.5625rem] opacity-90">
-                  {brief.couponCode ? `Code ${brief.couponCode}` : brief.dealText}
-                </span>
-              </div>
-              <figcaption className="mt-[0.375rem] flex items-center gap-[0.375rem]">
-                <Badge tone={brief.status === "delivered" ? "good" : "warn"}>
-                  {brief.status === "delivered" ? "delivered" : "in design"}
-                </Badge>
-                <span className="truncate text-[0.625rem] text-slate-500">
-                  {brief.template === "story" ? "1080 × 1920" : "1080 × 1080"}
-                </span>
-              </figcaption>
-            </figure>
+                {play.split(" ")[0]}
+              </Badge>
+            </div>
           ))}
         </div>
 
         <p className="mt-[0.5rem] text-[0.625rem] text-slate-500">
-          Prices and codes pulled from your own catalogue
+          Marginals fall to the scrap gate before any pass is final
         </p>
       </div>
     ),
   },
   {
-    title: "Social media tracking profiles",
-    area: "1 / 7 / 8 / 13",
-    z: 4,
-    shift: "-ml-[3rem] -mt-[2.5rem]",
+    title: "Outreach",
+    area: "1 / 1 / 8 / 7",
+    z: 2,
     body: (
       <div className="text-[0.6875rem]">
-        <ScreenHead icon={<Share2 size={13} />} title="Tracked profiles" chip="Daily scan" />
+        <ScreenHead title="Owner outreach" chip="3 sent today" tone="good" />
 
         <ul className="mt-[0.5rem] space-y-[0.375rem]">
-          {TRACKED_PROFILES.map(({ target, competitor, channel }) => (
-            <li key={target.handle} className={MOCK_ROW}>
+          {[
+            ["Storage tenant — last notice", "keep 25% of resale"],
+            ["Executor — county case 813", "clear free, 85% remit"],
+            ["Facility manager — pilot", "broom-clean in 48h"],
+          ].map(([who, hook]) => (
+            <li key={who} className={MOCK_ROW}>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-[0.6875rem] font-medium text-slate-900">
-                  {target.handle}
+                  {who}
                 </span>
-                <span className="block truncate text-[0.625rem] text-slate-500">
-                  {competitor?.name}
-                  {channel
-                    ? ` · ${compact(channel.followers)} followers · ${channel.postsPerWeek}/wk`
-                    : ""}
-                </span>
+                <span className="block truncate text-[0.625rem] text-slate-500">{hook}</span>
               </span>
-              {channel ? (
-                <span className="shrink-0 rounded-full bg-[rgba(168,85,247,0.14)] px-[0.375rem] py-[0.0625rem] text-[0.625rem] font-semibold text-[var(--od-accent)]">
-                  {channel.engagementRate}% eng
-                </span>
-              ) : null}
+              <Badge tone="neutral">sent</Badge>
             </li>
           ))}
         </ul>
 
         <p className="mt-[0.5rem] text-[0.625rem] text-slate-500">
-          Posts, follows and engagement collected on every scan
+          Reply or three attempts inside seven days, then the stage moves
         </p>
+      </div>
+    ),
+  },
+  {
+    title: "Runner network",
+    area: "1 / 7 / 8 / 13",
+    z: 4,
+    shift: "-ml-[3rem] -mt-[2.5rem]",
+    body: (
+      <div className="text-[0.6875rem]">
+        <ScreenHead title="Runners near the job" chip="5 in radius" tone="info" />
 
-        <p className="mt-[0.25rem] text-[0.625rem] text-slate-500">
-          {TRACKED_PROFILES.length} rival profiles · next scan 06:00
+        <ul className="mt-[0.5rem] space-y-[0.375rem]">
+          {[
+            ["Marcus T.", "1.4 mi · 94% done · paid same day"],
+            ["Runner crew #12", "3 mi · 30–40% of net"],
+            ["Chris O.", "0.8 mi · student pool"],
+          ].map(([who, note]) => (
+            <li key={who} className={MOCK_ROW}>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-[0.6875rem] font-medium text-slate-900">
+                  {who}
+                </span>
+                <span className="block truncate text-[0.625rem] text-slate-500">{note}</span>
+              </span>
+              <Badge tone="good">hire</Badge>
+            </li>
+          ))}
+        </ul>
+
+        <p className="mt-[0.5rem] text-[0.625rem] text-slate-500">
+          Nobody is paid upfront — pay fast, pay exactly, publish the math
         </p>
       </div>
     ),
@@ -454,40 +347,11 @@ export function LevelUpBand() {
 
       <Container className="relative z-[1]">
         <h2 className="od-d2 mb-[4rem] lg:text-center">
-          Level up your quality of <Mark tone="yellow-03">work</Mark>
+          Level up your deal <Mark tone="yellow-03">flow</Mark>
         </h2>
 
         {/* Odoo's `o_grid_mode` collage: 12 columns, 50px rows, 10px of
-            padding on every cell, and the screens covering their cell. */}
-        <div className="mx-[-10px] hidden lg:grid lg:grid-cols-12 lg:auto-rows-[50px]">
-          {CELLS.map((cell) => (
-            <figure key={cell.src} className="p-[10px]" style={{ gridArea: cell.area }}>
-              <img
-                src={cell.src}
-                alt={cell.alt}
-                loading="lazy"
-                className={`od-shot ${cell.className ?? "object-left-top"}`}
-              />
-            </figure>
-          ))}
-        </div>
-
-        {/* Below `lg` Odoo swaps the collage for one full-width shot. The
-            wrapper carries `lg:hidden` rather than the image, because
-            `.od-shot` sets its own `display` and would out-rank the utility. */}
-        <div className="lg:hidden">
-          <img
-            src={SHOTS.competition}
-            alt="The BIZLIT competition screen with a rival's traffic sources and live campaigns"
-            loading="lazy"
-            className="od-shot h-auto"
-          />
-        </div>
-
-        {/* Under the screenshots, the four jobs the product does are the same
-            collage again: Odoo's 12 columns and 50px rows, a white mat on every
-            cell, and cells whose spans cross each other the way its own four
-            do — no captions, just the screens. */}
+            padding on every cell — ours carries the desk's own panels. */}
         <div className="mx-[-10px] hidden lg:grid lg:grid-cols-12 lg:auto-rows-[50px]">
           {PANELS.map((panel) => (
             <figure
@@ -517,9 +381,9 @@ export function LevelUpBand() {
         <div className="flex justify-center">
           <div className="pt-[4rem] lg:w-5/12 lg:text-center">
             <p className="od-lead mb-[1.5rem]">
-              <strong className="font-medium">Everything on one desk,</strong> ranked as it moves —
-              competitor prices, stock, campaigns and search positions, captured on the cadence you
-              set and ready before your first coffee.
+              <strong className="font-medium">Everything on one desk,</strong> scored as it
+              moves — signals swept on schedule, every lead carrying its own number, and a
+              bid ceiling computed before you ever raise a paddle.
             </p>
 
             <Doodle
@@ -532,7 +396,7 @@ export function LevelUpBand() {
               href="#screens"
               className="od-doodle mx-auto rotate-[350deg] text-[2rem] no-underline"
             >
-              See it on your own data
+              See it on the live board
             </a>
           </div>
         </div>
@@ -545,16 +409,16 @@ export function LevelUpBand() {
 
 const AI_ITEMS = [
   {
-    title: "Reply drafts",
-    body: "Every review that needs an answer arrives with a draft you edit and send yourself.",
+    title: "Photo reads before bids",
+    body: "Auction and listing photos are read for brands, containers, hazards and scrap — the extraction that feeds the storage score.",
   },
   {
-    title: "Original ad angles",
-    body: "Built from a competitor's best-performing post — an angle for your brand, never their artwork.",
+    title: "Fixed math, not vibes",
+    body: "The AI does the looking; the engines do the scoring. Same inputs always produce the same score and the same play.",
   },
   {
-    title: "Keyword themes",
-    body: "Intent themes that label the suggestions you already had. Nothing invented gets through.",
+    title: "Calibrated probabilities",
+    body: "Predicted vs. realized is logged deal by deal. A category that misses by 30% gets its probabilities cut and its bid multiplier tightened.",
   },
 ];
 
@@ -563,7 +427,7 @@ export function AiBand() {
     <section className="pt-[6rem] pb-[3rem] lg:text-center">
       <Container>
         <h2 className="od-d2 mb-[4rem]">
-          AI that reads the <Mark tone="coral">noise</Mark> for you
+          AI that reads the <Mark tone="coral">records</Mark> for you
         </h2>
 
         <div className="grid gap-x-[2rem] md:grid-cols-3 lg:text-left">
@@ -583,42 +447,41 @@ export function AiBand() {
 
 const PRINCIPLES: { title: string; body: string; icon: ReactNode }[] = [
   {
-    title: "One workspace, not six tabs",
-    body: "Competitors, suppliers, search, local, reputation, customers and the ad pipeline share one desk with one sign-in.",
+    title: "One desk, every asset class",
+    body: "Storage, real estate, estates, commercial closures and junk all share one lead database, one pipeline and one sign-in.",
     icon: <BadgeCheck />,
   },
   {
-    title: "Your rows, nobody else's",
-    body: "Every read and write is tenant-scoped behind row level security. Nothing is shared between desks, ever.",
-    icon: <ShieldCheck />,
+    title: "Deterministic scoring",
+    body: "Four engines with published weights and a master router that rejects what it should. The gambling happens at auction only when the math says to.",
+    icon: <ClipboardList />,
   },
   {
-    title: "Drafts, never autopilot",
-    body: "Reply drafts wait in the composer and ad angles create briefs. Nothing is sent, posted or created without you.",
-    icon: <FileText />,
-  },
-  {
-    title: "Costs you can actually see",
-    body: "Each provider call is logged with its units and dollars, and a run refuses itself before it breaks the monthly cap.",
+    title: "Nothing paid upfront",
+    body: "Revenue share, assignment and pay-after-sale structures. The float comes from scrap runs — never from the reserve.",
     icon: <Wallet />,
+  },
+  {
+    title: "Hard vetoes built in",
+    body: "Biohazards, unresolvable title defects, unlicensed jurisdictions — an automatic pass, whatever the score says.",
+    icon: <ShieldCheck />,
   },
 ];
 
 const PLAN_FEATURES = [
-  "Competitor and traffic monitoring",
-  "SEO and AI-answer (GEO) scores, weekly",
-  "One ranked notifications desk",
-  "Client messaging from your own mailbox",
-  "Review scans with reply flags",
-  "A buy list built from real price moves",
-  "No pipelines or setup required",
+  "Storage engine with comped bid ceilings",
+  "Wholesale engine at the 70% rule",
+  "Estate cleanout-consign at 80–90% remit",
+  "Scrap gate and same-day runner payouts",
+  "Master router and watchlist re-scores",
+  "Deal ledger with predicted-vs-realized",
 ];
 
 export function DoneRightBand() {
   return (
     <Band leaf className="py-[3rem] lg:py-[6rem]">
       <h2 className="od-d2 mb-[4rem] lg:text-center">
-        Competitor watch
+        Distress intelligence
         <br />
         done <Underline>right</Underline>.
       </h2>
@@ -642,12 +505,12 @@ export function DoneRightBand() {
       >
         <div className="grid gap-[2rem] md:grid-cols-[1fr_1.25fr] md:gap-[4rem]">
           <div>
-            <h3 className="od-h4 mb-[1rem]">One plan, every source</h3>
-            <p className="text-[var(--od-body)]">For independent retailers and small buying teams.</p>
+            <h3 className="od-h4 mb-[1rem]">One plan, every asset class</h3>
+            <p className="text-[var(--od-body)]">For solo and small distressed-asset teams.</p>
             <p className="mt-[1.5rem] text-[1.5rem] font-semibold text-[var(--od-ink)]">
-              $39{" "}
+              $0{" "}
               <span className="text-[1rem] font-normal text-[var(--od-muted)]">
-                per user / month
+                upfront — we take a share of each deal we monetize
               </span>
             </p>
             <div className="mt-[1.5rem] flex flex-wrap gap-[1rem]">
@@ -659,7 +522,7 @@ export function DoneRightBand() {
               </a>
             </div>
             <p className="mt-[1rem] text-[0.875rem] text-[var(--od-muted)]">
-              No credit card to start · Cancel whenever you like
+              Every deal is structured as revenue share, assignment or pay-after-sale
             </p>
           </div>
 
@@ -713,3 +576,5 @@ export function FaqBand({ items }: { items: FaqItem[] }) {
     </section>
   );
 }
+
+/* -------------------------------------------------------------------- faq */

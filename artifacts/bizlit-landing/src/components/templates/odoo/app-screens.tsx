@@ -1,47 +1,43 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { BarChart3, Binoculars, Users } from "lucide-react";
+import { Boxes, Radar, Users } from "lucide-react";
 import { Badge, Td, Th } from "@/components/primitives";
 import { BarList, DeltaPill, ProgressRing } from "@/components/charts";
-import { sampleWorkspace } from "@/data/sample";
-import { compact } from "@/lib/format";
 import { Band, Mark } from "./bits";
 
 /*
  * Odoo gives its product a full-width screenshot band in the middle of the
  * page, so this is ours: the real workspace layouts, rendered from the app's
- * own primitives with the sample workspace behind them, swapped by a small
+ * own primitives with the distress desk behind them, swapped by a small
  * slider. Everything below is the app's own light palette on purpose — it is
  * the product itself, not the marketing page.
  */
 
-const DEMO = sampleWorkspace();
-
-type ScreenId = "competition" | "business" | "clients";
+type ScreenId = "pipeline" | "engine" | "network";
 
 const SCREENS: { id: ScreenId; label: string; icon: ReactNode; render: () => ReactNode }[] = [
   {
-    id: "competition",
-    label: "Competition",
-    icon: <Binoculars size={14} />,
-    render: () => <CompetitionScreen />,
+    id: "pipeline",
+    label: "Lead pipeline",
+    icon: <Radar size={14} />,
+    render: () => <PipelineScreen />,
   },
   {
-    id: "business",
-    label: "My Business",
-    icon: <BarChart3 size={14} />,
-    render: () => <BusinessScreen />,
+    id: "engine",
+    label: "Storage engine",
+    icon: <Boxes size={14} />,
+    render: () => <EngineScreen />,
   },
   {
-    id: "clients",
-    label: "Clients",
+    id: "network",
+    label: "Runner network",
     icon: <Users size={14} />,
-    render: () => <ClientsScreen />,
+    render: () => <NetworkScreen />,
   },
 ];
 
 export function ScreensBand() {
-  const [screen, setScreen] = useState<ScreenId>("competition");
+  const [screen, setScreen] = useState<ScreenId>("pipeline");
   const active = SCREENS.find((s) => s.id === screen) ?? SCREENS[0];
 
   return (
@@ -50,7 +46,7 @@ export function ScreensBand() {
         Every screen, <Mark tone="coral">before</Mark> you sign up.
       </h2>
       <p className="mx-auto max-w-2xl text-[1.25rem] text-[var(--od-body)] lg:text-center">
-        The real workspace layouts, shown with sample data. Pick one and look around.
+        The real workspace layouts, shown with sample deals. Pick one and look around.
       </p>
 
       <div className="mt-8 flex justify-center">
@@ -89,8 +85,8 @@ export function ScreensBand() {
       </div>
 
       <p className="mt-4 text-center text-sm text-[var(--od-muted)]">
-        Screens shown with sample data. Your own workspace fills in as soon as your first scan
-        completes.
+        Screens shown with sample deals. Your own board fills in as soon as your first sweep
+        runs.
       </p>
     </Band>
   );
@@ -122,110 +118,74 @@ function RingTile({ label, value, color }: { label: string; value: number; color
   );
 }
 
-function CompetitionScreen() {
-  const competitor = DEMO.competitors[0];
+/* ------------------------------------------------------------ pipeline */
 
+type Row = {
+  id: string;
+  lead: string;
+  assetClass: "storage" | "real estate" | "estate" | "commercial" | "junk";
+  stage: string;
+  score: number | null;
+  play: string;
+};
+
+const LEADS: Row[] = [
+  { id: "L-1141", lead: "Unit 214 · Valley Self-Storage", assetClass: "storage", stage: "Contacted", score: 81, play: "BID to $290" },
+  { id: "L-1138", lead: "142 Wilson Ave · probate heir", assetClass: "real estate", stage: "Negotiating", score: 80, play: "CONTRACT" },
+  { id: "L-1136", lead: "Est. of R. Alvarez · 2-bed house", assetClass: "estate", stage: "Under Contract", score: 72, play: "CLEANOUT-CONSIGN" },
+  { id: "L-1131", lead: "Curb alerts · 6 items this week", assetClass: "junk", stage: "Monetizing", score: null, play: "RUN" },
+  { id: "L-1126", lead: "Defunct print shop · UCC liens", assetClass: "commercial", stage: "Researched", score: 43, play: "WATCH" },
+  { id: "L-1119", lead: "Unit 87 · paper-only contents", assetClass: "storage", stage: "Dead", score: 31, play: "PASS veto" },
+];
+
+function PipelineScreen() {
   return (
     <div className="p-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="mr-1 text-xs font-semibold text-slate-900">Watching</span>
-        {DEMO.competitors.map((c) => (
-          <span
-            key={c.id}
-            className={`rounded-full px-3 py-1 text-[11px] font-medium ring-1 ${
-              c.id === competitor.id
-                ? "bg-indigo-600 text-white ring-indigo-600"
-                : "bg-white text-slate-600 ring-slate-300"
-            }`}
-          >
-            {c.name}
-          </span>
-        ))}
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <MiniStat
-          label="Their traffic"
-          value={compact(competitor.monthlyVisits)}
-          delta={competitor.visitsChange}
-        />
-        <MiniStat label="SEO score" value={competitor.seoScore} />
-        <MiniStat label="GEO score" value={competitor.geoScore} />
-        <MiniStat label="Rating" value={competitor.rating.toFixed(1)} />
-      </div>
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 p-3">
-          <p className="text-[10px] tracking-wide text-slate-500 uppercase">Traffic sources</p>
-          <div className="mt-2">
-            <BarList
-              data={competitor.trafficSources.map((s) => ({ label: s.label, value: s.share }))}
-              color="#8b5cf6"
-              valueFormat={(n) => `${n}%`}
-            />
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-slate-200 p-3">
-          <p className="text-[10px] tracking-wide text-slate-500 uppercase">Live campaigns</p>
-          <ul className="mt-2 space-y-2">
-            {competitor.ads.slice(0, 2).map((ad) => (
-              <li key={ad.id} className="rounded-lg bg-slate-50 px-2.5 py-2">
-                <p className="text-[11px] font-medium text-slate-800">{ad.headline}</p>
-                <p className="mt-0.5 text-[10px] text-slate-500">
-                  {ad.platform} · {ad.status}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function BusinessScreen() {
-  const metrics = DEMO.metrics;
-
-  return (
-    <div className="p-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <RingTile label="SEO score" value={metrics.seoScore} color="#6366f1" />
-        <RingTile label="GEO / AI visibility" value={metrics.geoScore} color="#a855f7" />
-        <MiniStat
-          label="Website traffic"
-          value={compact(metrics.monthlyVisits)}
-          delta={metrics.visitsChange}
-        />
-        <MiniStat label="Industry rank" value={`#${metrics.industryRank}`} />
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <MiniStat label="Leads detected this week" value={47} delta={12} />
+        <MiniStat label="Reply rate" value={17} delta={2} />
+        <MiniStat label="Signed deals" value={4} />
+        <MiniStat label="Days to cash" value={19} />
       </div>
 
       <div className="mt-4 overflow-x-auto">
-        <table className="w-full min-w-[520px]">
+        <table className="w-full min-w-[640px]">
           <thead className="bg-slate-50">
             <tr>
-              <Th>Tracked keyword</Th>
-              <Th className="text-right">Volume</Th>
-              <Th className="text-right">Position</Th>
+              <Th>Lead</Th>
+              <Th>Asset class</Th>
+              <Th>Stage</Th>
+              <Th className="text-right">Score</Th>
+              <Th className="text-right">Play</Th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {DEMO.topSeoKeywords.slice(0, 4).map((row) => (
-              <tr key={row.keyword}>
-                <Td className="text-xs text-slate-700">{row.keyword}</Td>
-                <Td className="text-right text-xs text-slate-600">
-                  {row.volume.toLocaleString()}
-                </Td>
+            {LEADS.map((row) => (
+              <tr key={row.id}>
+                <Td className="text-xs text-slate-700">{row.lead}</Td>
+                <Td className="text-xs text-slate-600">{row.assetClass}</Td>
+                <Td className="text-xs text-slate-600">{row.stage}</Td>
                 <Td className="text-right">
-                  {row.position === null ? (
-                    <Badge tone="neutral">Not ranked</Badge>
+                  {row.score === null ? (
+                    <Badge tone="neutral">scrap gate</Badge>
                   ) : (
-                    <Badge
-                      tone={row.position <= 3 ? "good" : row.position <= 10 ? "info" : "neutral"}
-                    >
-                      #{row.position}
+                    <Badge tone={row.score >= 70 ? "good" : row.score >= 55 ? "info" : "warn"}>
+                      {row.score}
                     </Badge>
                   )}
+                </Td>
+                <Td className="text-right">
+                  <Badge
+                    tone={
+                      row.play.startsWith("PASS")
+                        ? "neutral"
+                        : row.play.startsWith("WATCH")
+                          ? "warn"
+                          : "good"
+                    }
+                  >
+                    {row.play}
+                  </Badge>
                 </Td>
               </tr>
             ))}
@@ -234,58 +194,137 @@ function BusinessScreen() {
       </div>
 
       <p className="mt-3 text-[10px] text-slate-500">
-        {DEMO.profile.primaryDomain} · {metrics.indexedPages.toLocaleString()} pages indexed ·
-        domain authority {metrics.domainAuthority}
+        Every stage has exit criteria. A dead lead keeps its reason code — it feeds
+        calibration.
       </p>
     </div>
   );
 }
 
-function ClientsScreen() {
-  const clients = DEMO.clients;
+/* -------------------------------------------------------------- engine */
 
+const SUBSCORES = [
+  { label: "Brand visibility", weight: 25, value: 94 },
+  { label: "Container composition", weight: 15, value: 60 },
+  { label: "Facility tier", weight: 15, value: 50 },
+  { label: "Scrap floor coverage", weight: 10, value: 100 },
+  { label: "Owner / context", weight: 10, value: 80 },
+  { label: "Unit visibility", weight: 10, value: 90 },
+  { label: "Cleanout complexity", weight: 10, value: 90 },
+  { label: "Auction horizon", weight: 5, value: 60 },
+];
+
+function EngineScreen() {
+  return (
+    <div className="p-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <RingTile label="Weighted score" value={81} color="#6366f1" />
+        <MiniStat label="Expected value" value="$642" />
+        <MiniStat label="Bid ceiling (EV × 0.45)" value="$290" />
+        <MiniStat label="Decision" value="BID" />
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-xl border border-slate-200 p-3">
+          <p className="text-[10px] tracking-wide text-slate-500 uppercase">Sub-scores</p>
+          <div className="mt-2">
+            <BarList
+              data={SUBSCORES.map((s) => ({ label: `${s.label} (${s.weight}%)`, value: s.value }))}
+              color="#8b5cf6"
+              valueFormat={(n) => `${n}`}
+            />
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 p-3">
+          <p className="text-[10px] tracking-wide text-slate-500 uppercase">The EV math</p>
+          <ul className="mt-2 space-y-1.5 text-xs text-slate-700">
+            {[
+              ["Snap-on chest", "0.7 × $800", "$560"],
+              ["Golf clubs", "0.6 × $120", "$72"],
+              ["Flat-screen TV", "0.5 × $150", "$75"],
+              ["Scrap floor", "guaranteed", "$85"],
+              ["Cleanout + dump", "cost", "−$150"],
+            ].map(([item, how, value]) => (
+              <li key={item} className="flex items-center justify-between rounded-lg bg-slate-50 px-2.5 py-1.5">
+                <span className="font-medium">{item}</span>
+                <span className="text-slate-500">{how}</span>
+                <span className="font-semibold">{value}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-[10px] text-slate-500">
+            Hard vetoes checked: biohazard, firearms (FFL), titles — none tripped.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------- network */
+
+type Runner = {
+  name: string;
+  distance: string;
+  rating: string;
+  completion: number;
+  pay: string;
+  status: "available" | "on a run" | "new";
+};
+
+const RUNNERS: Runner[] = [
+  { name: "Marcus T.", distance: "1.4 mi from unit", rating: "★ 4.9", completion: 94, pay: "35% of net", status: "available" },
+  { name: "Runner crew #12", distance: "3.0 mi", rating: "★ 4.6", completion: 88, pay: "30% of net", status: "on a run" },
+  { name: "Chris O.", distance: "0.8 mi", rating: "★ 4.2", completion: 76, pay: "30% of net", status: "new" },
+  { name: "Estate crew · Ortiz", distance: "4.9 mi", rating: "★ 4.8", completion: 91, pay: "day rate from proceeds", status: "available" },
+];
+
+function NetworkScreen() {
   return (
     <div className="p-4">
       <div className="grid grid-cols-3 gap-3">
-        <MiniStat
-          label="Active customers"
-          value={clients.filter((c) => c.status === "active").length}
-        />
-        <MiniStat label="On the list" value={clients.length} />
-        <MiniStat label="Send cadence" value="Weekly" />
+        <MiniStat label="In radius" value={12} />
+        <MiniStat label="Job completion" value="94%" />
+        <MiniStat label="Paid same day" value="Always" />
       </div>
 
       <div className="mt-4 overflow-x-auto">
-        <table className="w-full min-w-[560px]">
+        <table className="w-full min-w-[600px]">
           <thead className="bg-slate-50">
             <tr>
-              <Th>Customer</Th>
-              <Th>Email</Th>
-              <Th>Status</Th>
-              <Th className="text-right">Open rate</Th>
+              <Th>Runner / crew</Th>
+              <Th>Distance to job</Th>
+              <Th className="text-right">Completion</Th>
+              <Th className="text-right">Pay structure</Th>
+              <Th className="text-right">Status</Th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {clients.slice(0, 4).map((c) => (
-              <tr key={c.id}>
+            {RUNNERS.map((r) => (
+              <tr key={r.name}>
                 <Td>
-                  <span className="block text-xs font-medium text-slate-900">{c.name}</span>
-                  <span className="text-[10px] text-slate-500">{c.company}</span>
+                  <span className="block text-xs font-medium text-slate-900">{r.name}</span>
+                  <span className="text-[10px] text-slate-500">{r.rating}</span>
                 </Td>
-                <Td className="text-xs text-slate-600">{c.email}</Td>
-                <Td>
-                  <Badge
-                    tone={c.status === "active" ? "good" : c.status === "paused" ? "warn" : "info"}
-                  >
-                    {c.status}
+                <Td className="text-xs text-slate-600">{r.distance}</Td>
+                <Td className="text-right text-xs font-semibold text-slate-900">{r.completion}%</Td>
+                <Td className="text-right text-xs text-slate-600">{r.pay}</Td>
+                <Td className="text-right">
+                  <Badge tone={r.status === "available" ? "good" : r.status === "new" ? "info" : "neutral"}>
+                    {r.status}
                   </Badge>
                 </Td>
-                <Td className="text-right text-xs font-semibold text-slate-900">{c.openRate}%</Td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      <p className="mt-3 text-[10px] text-slate-500">
+        Scrap gate rule: run only when the yard estimate clears 1.5× the runner payout plus
+        dump fees.
+      </p>
     </div>
   );
 }

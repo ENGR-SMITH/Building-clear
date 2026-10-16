@@ -12,9 +12,9 @@ export default function Cta() {
     <section className="overflow-hidden pt-[12rem] pb-[6rem] text-center">
       <Container>
         <h3 className="od-d1 mb-[3rem]">
-          <span className="od-fireworks">Unleash</span>
+          <span className="od-fireworks">One desk,</span>
           <br />
-          your <span className="text-[var(--od-accent)]">growth potential</span>
+          every distress <span className="text-[var(--od-accent)]">one decision</span>
         </h3>
 
         <a href="/sign-up" className={odBtnLg + " mb-[1rem]"}>

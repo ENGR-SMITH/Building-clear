@@ -20,19 +20,37 @@ type PanelGroup = { title: string; items: string[] };
 const LINKS: { id: string; label: string; panel?: PanelGroup[] }[] = [
   {
     id: "sources",
-    label: "Sources",
+    label: "Signals",
     panel: [
       {
-        title: "Watch",
-        items: ["Competitor sites", "Supplier catalogues", "Price moves", "Stock moves", "Promotions"],
+        title: "Detect",
+        items: [
+          "Storage liens & auctions",
+          "Pre-foreclosure & tax sales",
+          "Probate & obituaries",
+          "Closures & UCC liens",
+          "Free sections & removals",
+        ],
       },
       {
-        title: "Measure",
-        items: ["Google positions", "Local map pack", "AI answers (GEO)", "Traffic & channels", "Keyword gaps"],
+        title: "Score",
+        items: [
+          "Storage unit engine",
+          "Wholesale engine",
+          "Estate cleanout engine",
+          "Scrap cash gate",
+          "Master router",
+        ],
       },
       {
         title: "Reach out",
-        items: ["Customer lists", "Review replies", "Weekly digest", "Ad briefs", "Buy list"],
+        items: [
+          "Storage tenant offer",
+          "Executor cleanout offer",
+          "Homeowner offer",
+          "Cash-buyer matching",
+          "Runner recruitment",
+        ],
       },
     ],
   },
@@ -40,7 +58,6 @@ const LINKS: { id: string; label: string; panel?: PanelGroup[] }[] = [
   { id: "pricing", label: "Pricing" },
   { id: "faq", label: "Help" },
 ];
-
 function jump(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -210,11 +227,12 @@ export default function Header() {
                     className="text-2xl text-[var(--od-ink)]"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
-                    Everything is scanned for you
+                    Every signal is scored for you
                   </p>
                   <p className="mt-2 text-sm text-[var(--od-body)]">
-                    Pick a cadence per source — daily, weekly or monthly — and the desk fills
-                    itself in. No tabs to open, no spreadsheets to keep.
+                    Pull them on a set cadence — daily sweeps, weekly dockets — and the
+                    router ranks each lead into a single play: bid, wholesale, cleanout,
+                    scrap or pass.
                   </p>
                   <button
                     type="button"

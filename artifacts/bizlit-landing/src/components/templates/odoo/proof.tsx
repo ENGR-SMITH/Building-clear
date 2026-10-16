@@ -1,5 +1,28 @@
+import {
+  Archive,
+  Armchair,
+  Ban,
+  Bike,
+  Boxes,
+  Briefcase,
+  Camera,
+  Car,
+  DoorOpen,
+  Gavel,
+  Guitar,
+  Hammer,
+  HardHat,
+  Home,
+  KeyRound,
+  Laptop,
+  Package,
+  Recycle,
+  Smartphone,
+  Sofa,
+  Tv,
+  Wrench,
+} from "lucide-react";
 import { Container, Doodle } from "./bits";
-import { SOURCES } from "./apps-grid";
 
 /*
  * Social proof in odoo.com's two shapes.
@@ -12,45 +35,50 @@ import { SOURCES } from "./apps-grid";
  * 350deg, pulled up 3rem and in from the right 4rem), then the quote icon and
  * a 0.75rem grey card in two columns.
  *
- * The tiles are photographs of real goods — a product or a service from every
- * trade the desk is run for, the same trades the sources wall names, plus a
- * few more lines of stock (cameras, sneakers, wine, plants) — cropped into
- * Odoo's circles, squircles and rounded squares. They stand in for the
- * portraits the reference site uses, which we have no library of, and the
- * tints behind them are only there so a tile never flashes empty while its
- * photo loads.
+ * The tiles are the things that come out of the deals — a unit, a property, an
+ * estate lot, a scrap run — drawn as the icon library's own marks sitting on
+ * the page's tints, so no tile ever flashes empty waiting on a photograph.
  */
 
-/** The eleven trades beyond the sources wall's own list, kept as stock photos. */
-const GOOD_SLUGS = [
-  "cameras",
-  "sneakers",
-  "watches",
-  "wine",
-  "cheese",
-  "plants",
-  "toys",
-  "paint",
-  "fabric",
-  "stationery",
-  "bikes",
-];
-
-/*
- * One photo per tile, and no photo twice: the 24 trade shots run down the wall
- * two at a time with one of the eleven goods between them — 35 tiles, 35
- * files. (The reference site fills its wall with people; a wall of goods from
- * every trade says the same thing about who is already selling here.)
- */
-const MOSAIC_PHOTOS: string[] = (() => {
-  const goods = [...GOOD_SLUGS];
-  const trades = SOURCES.map((source) => source.slug);
-  const photos: string[] = [];
-  for (let i = 0; i < 35; i++) {
-    photos.push(i % 3 === 2 ? goods.shift()! : trades.shift()!);
-  }
-  return photos;
-})();
+/* Enough marks to fill the wall with no repeats: units, contents, tools,
+   properties and the network the deals run through. */
+const TILE_ICONS = [
+  Package,
+  Home,
+  Gavel,
+  Wrench,
+  Sofa,
+  DoorOpen,
+  Hammer,
+  Car,
+  Laptop,
+  Boxes,
+  KeyRound,
+  Briefcase,
+  Archive,
+  Guitar,
+  Recycle,
+  Armchair,
+  Tv,
+  HardHat,
+  Smartphone,
+  Ban,
+  Bike,
+  Camera,
+  Package,
+  Home,
+  Boxes,
+  KeyRound,
+  Hammer,
+  Tv,
+  Archive,
+  Recycle,
+  Armchair,
+  Laptop,
+  Wrench,
+  Sofa,
+  Car,
+] as const;
 
 const MOSAIC_TINTS = [
   "var(--od-tile-1)",
@@ -71,21 +99,18 @@ function Mosaic() {
 
   return (
     <div className="od-mosaic flex flex-wrap justify-between" aria-hidden>
-      {cells.map((i) => (
-        <div
-          key={i}
-          className={`m-[0.25rem] h-20 w-20 overflow-hidden md:m-[0.75rem] ${TILE_SHAPES[i % TILE_SHAPES.length]}`}
-          style={{ backgroundColor: MOSAIC_TINTS[i % MOSAIC_TINTS.length] }}
-        >
-          {/* each tile has its own file; nothing in the wall repeats */}
-          <img
-            src={`/img/products/${MOSAIC_PHOTOS[i]}.jpg`}
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover"
-          />
-        </div>
-      ))}
+      {cells.map((i) => {
+        const Icon = TILE_ICONS[i % TILE_ICONS.length];
+        return (
+          <div
+            key={i}
+            className={`flex h-20 w-20 items-center justify-center overflow-hidden p-4 md:m-[0.75rem] m-[0.25rem] ${TILE_SHAPES[i % TILE_SHAPES.length]}`}
+            style={{ backgroundColor: MOSAIC_TINTS[i % MOSAIC_TINTS.length] }}
+          >
+            <Icon className="h-8 w-8 text-[var(--od-ink)] opacity-45" />
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -116,7 +141,7 @@ export function UsersBand() {
         <div className="absolute inset-0 z-[1] flex items-center justify-center">
           <div className="rounded-[50rem] bg-[var(--od-surface)] px-[4rem] py-[4rem] text-center lg:px-[8rem]">
             <h6 className="od-d2 relative mb-[0.5rem]">
-              Join retailers{" "}
+              Join owners{" "}
               <span className="od-sup hidden md:inline">
                 <Doodle
                   src="/img/odoo/arrow_circular_down_left.svg"
@@ -126,9 +151,11 @@ export function UsersBand() {
                 />
                 happy
               </span>{" "}
-              to grow
+              to hand it over
             </h6>
-            <span className="text-[1.5rem]">their business with BIZLIT</span>
+            <span className="text-[1.5rem]">
+              units, houses and estates handled with BIZLIT
+            </span>
           </div>
         </div>
 
@@ -161,21 +188,22 @@ export function TestimonialBand() {
           <div className="relative grid gap-[1.5rem] rounded-[0.75rem] bg-[var(--od-band)] p-[1.5rem] md:grid-cols-3 md:p-[4rem]">
             <blockquote className="md:col-span-2 lg:pb-0">
               <p className="text-[1.5rem] leading-normal font-bold text-[var(--od-ink)]">
-                Our SEO score was stuck at 61 and nobody could tell me why. The keyword gaps were
-                the answer, written out plainly.
+                I had a mother's house and a closing date, and no idea what to do with
+                everything inside. They cleared it for free, sold what was worth selling, and
+                sent me most of the proceeds.
               </p>
             </blockquote>
 
             <div className="flex flex-col items-end justify-center gap-[1.5rem] lg:items-end">
               <div className="text-right">
-                <b className="font-bold text-[var(--od-ink)]">Tom Whitfield</b>
+                <b className="font-bold text-[var(--od-ink)]">Dana Alvarez</b>
                 <br />
                 <small className="text-[0.875rem] text-[var(--od-muted)]">
-                  Wholesale buyer
+                  Probate executor
                 </small>
               </div>
               <span className="w-[100px] rounded-[0.25rem] border border-[rgba(109,40,217,0.15)] bg-[var(--od-surface)] p-[0.25rem] text-center text-sm font-semibold tracking-wide text-[var(--od-violet)]">
-                WHITFIELD
+                ALVAREZ ESTATE
               </span>
             </div>
           </div>

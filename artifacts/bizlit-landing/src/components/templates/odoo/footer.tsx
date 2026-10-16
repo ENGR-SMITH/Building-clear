@@ -10,23 +10,23 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Workspace",
     links: [
-      { label: "Competition", href: "#screens" },
-      { label: "Clients", href: "#screens" },
-      { label: "My Business", href: "#screens" },
-      { label: "Social & reviews", href: "#screens" },
-      { label: "Inventory", href: "#screens" },
-      { label: "Promotions", href: "#screens" },
+      { label: "Lead pipeline", href: "#screens" },
+      { label: "Storage engine", href: "#screens" },
+      { label: "Runner network", href: "#screens" },
+      { label: "Outreach & follow-up", href: "#screens" },
+      { label: "Deal ledger", href: "#screens" },
+      { label: "Calibration", href: "#screens" },
     ],
   },
   {
     title: "What it watches",
     links: [
-      { label: "Competitor sites", href: "#sources" },
-      { label: "Supplier catalogues", href: "#sources" },
-      { label: "Search rankings", href: "#sources" },
-      { label: "Local map pack", href: "#sources" },
-      { label: "AI answers", href: "#sources" },
-      { label: "Customer reviews", href: "#sources" },
+      { label: "Storage liens & auctions", href: "#sources" },
+      { label: "Pre-foreclosures & tax sales", href: "#sources" },
+      { label: "Probate & obituaries", href: "#sources" },
+      { label: "Closures & UCC liens", href: "#sources" },
+      { label: "Free sections & junk removals", href: "#sources" },
+      { label: "Sold-price comps", href: "#sources" },
     ],
   },
   {
@@ -91,13 +91,14 @@ export default function Footer() {
             </span>
 
             <p className="mt-5 text-[15px] leading-relaxed">
-              BIZLIT is a competitor and supplier monitoring workspace that covers everything a
-              retail trading desk needs: what rivals changed, where you rank, what local customers
-              see, what your customers are saying, and what to do next.
+              BIZLIT is the distress-intelligence operating desk: it detects financial
+              distress across storage, real estate, estates, commercial closures and junk,
+              scores every opportunity with four fixed engines, and routes each lead to a
+              single play — bid, wholesale, cleanout, runner-scrap or pass.
             </p>
             <p className="mt-4 text-[15px] leading-relaxed">
-              One desk instead of a dozen open tabs — on a daily, weekly or monthly cadence you
-              choose.
+              Every deal is structured as revenue share, assignment or pay-after-sale —
+              nothing requires upfront cash.
             </p>
 
             <ul className="mt-5 flex items-center gap-4">
