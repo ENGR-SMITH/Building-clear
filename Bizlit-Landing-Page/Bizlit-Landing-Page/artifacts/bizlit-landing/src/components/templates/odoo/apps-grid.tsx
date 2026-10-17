@@ -1,24 +1,21 @@
-import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { CalendarDays } from "lucide-react";
 import { Container } from "./bits";
 
 /*
- * Odoo's opening grey band, rebuilt against the real thing.
+ * The signal wall: one grey band, a weekly sweep pill and a single row of
+ * tiles, each naming a source the desk sweeps.
  *
- * The geometry is Odoo's, to the number: each tile is an `<img>` at
- * `img-thumbnail rounded-1 mb-3` — 80px, 12px of padding, no border, a 0.5rem
- * radius and the violet glow — on an `od-app-entry` cell that lifts 0.25rem on
- * hover, in a row that lifts 3rem (4rem from `md`) below the pill.
+ * This band used to carry odoo.com's "Imagine without odoo" switch as well —
+ * a checkbox that wrote a sheet of hand-drawn arrows and fourteen scrawled
+ * product names over the wall. It read as clutter at the top of the page, so
+ * the switch and its overlay are gone; the wall and the pill carry the point
+ * on their own.
  *
- * The icons are the reference's own: every Odoo app module ships
- * `static/description/icon.svg`, which is what odoo.com serves from
- * download.odoocdn.com — not a packaged icon library. They are paired here
- * with the asset classes and signal sources the distress desk sweeps, so the
- * captions and the marker writing are ours while the artwork and every
- * measurement are the reference's.
+ * Every tile is a door into the request form rather than an account: the wall
+ * answers "how did you find me?", and the answer to that is a conversation.
  */
 
-/** One tile: the reference's app icon over one of the asset classes we run. */
+/** One tile: the reference's app icon over one of the signal sources we sweep. */
 type Source = { slug: string; label: string };
 
 export const SOURCES: Source[] = [
@@ -49,163 +46,30 @@ export const SOURCES: Source[] = [
 ];
 
 /*
- * What the switch writes over the wall: the tools this desk replaces — ours,
- * not Odoo's list — each one hanging off the arrow that the reference draws for
- * that spot. Fourteen of the sheet's seventeen arrows came across — one per
- * name below — and its lettering did not.
- */
-type Mark = { label: string; x: number; y: number; align?: "left" | "right" };
-
-const MARKS: Mark[] = [
-  { label: "Auction calendars", x: -4.39, y: -2.98 },
-  { label: "Skip-trace sheets", x: -6.23, y: 26.59 },
-  { label: "PACER tabs", x: -4.1, y: 64.08, align: "right" },
-  { label: "Legacy.com", x: 15.45, y: 46.9 },
-  { label: "Zillow tabs", x: 111.2, y: 2.62 },
-  { label: "Auction.com", x: 111.1, y: 31.42 },
-  { label: "eBay solds", x: 110.59, y: 54.23 },
-  { label: "Spreadsheets", x: 107.82, y: 93.85 },
-  { label: "StorageTreasures", x: 14.39, y: -7.09 },
-  { label: "Comp printouts", x: 37.52, y: -3.6 },
-  { label: "NETR Online", x: 90.17, y: -3.25 },
-  { label: "DNC checks", x: 33.9, y: 103.84 },
-  { label: "OfferUp sweeps", x: 31.51, y: 71.8 },
-  { label: "Craigslist + Excel", x: 81.95, y: 101.0 },
-];
-
-/* The pill's content, by country. Odoo shows whichever of its events is
-   nearest; ours lists the auction weeks we cover, keyed by ISO country code. */
-type Event = { place: string; date: string };
-
-const EVENTS: Record<string, Event> = {
-  NG: { place: "Storage Auction Week Lagos", date: "Oct 13, 2026" },
-  GH: { place: "Storage Auction Week Accra", date: "Nov 3, 2026" },
-  KE: { place: "Storage Auction Week Nairobi", date: "Nov 10, 2026" },
-  ZA: { place: "Storage Auction Week Cape Town", date: "Nov 24, 2026" },
-  GB: { place: "Storage Auction Week London", date: "Dec 1, 2026" },
-  IE: { place: "Storage Auction Week Dublin", date: "Dec 3, 2026" },
-  US: { place: "Storage Auction Week New York", date: "Dec 8, 2026" },
-  CA: { place: "Storage Auction Week Toronto", date: "Jan 19, 2027" },
-  IN: { place: "Storage Auction Week Mumbai", date: "Jan 26, 2027" },
-  AE: { place: "Storage Auction Week Dubai", date: "Feb 2, 2027" },
-  SG: { place: "Storage Auction Week Singapore", date: "Feb 9, 2027" },
-  AU: { place: "Storage Auction Week Sydney", date: "Feb 16, 2027" },
-  DE: { place: "Storage Auction Week Berlin", date: "Mar 2, 2027" },
-  FR: { place: "Storage Auction Week Paris", date: "Mar 9, 2027" },
-  NL: { place: "Storage Auction Week Amsterdam", date: "Mar 11, 2027" },
-  BR: { place: "Storage Auction Week São Paulo", date: "Mar 16, 2027" },
-};
-
-/* The reference card, for anywhere we have no show of our own. */
-const FALLBACK: Event = { place: "Storage Auction Week Lagos", date: "Oct 13, 2026" };
-
-/** Timezone -> country, so the pill answers to where the clock is, not the IP. */
-const TZ_COUNTRY: Record<string, string> = {
-  "Africa/Lagos": "NG",
-  "Africa/Accra": "GH",
-  "Africa/Nairobi": "KE",
-  "Africa/Johannesburg": "ZA",
-  "Africa/Cairo": "EG",
-  "Europe/London": "GB",
-  "Europe/Dublin": "IE",
-  "Europe/Paris": "FR",
-  "Europe/Berlin": "DE",
-  "Europe/Madrid": "ES",
-  "Europe/Rome": "IT",
-  "Europe/Amsterdam": "NL",
-  "Europe/Lisbon": "PT",
-  "Europe/Warsaw": "PL",
-  "America/New_York": "US",
-  "America/Chicago": "US",
-  "America/Denver": "US",
-  "America/Phoenix": "US",
-  "America/Los_Angeles": "US",
-  "America/Anchorage": "US",
-  "America/Toronto": "CA",
-  "America/Vancouver": "CA",
-  "America/Mexico_City": "MX",
-  "America/Sao_Paulo": "BR",
-  "Asia/Kolkata": "IN",
-  "Asia/Calcutta": "IN",
-  "Asia/Dubai": "AE",
-  "Asia/Singapore": "SG",
-  "Asia/Karachi": "PK",
-  "Asia/Dhaka": "BD",
-  "Asia/Jakarta": "ID",
-  "Asia/Manila": "PH",
-  "Asia/Shanghai": "CN",
-  "Asia/Tokyo": "JP",
-  "Asia/Seoul": "KR",
-  "Asia/Riyadh": "SA",
-  "Australia/Sydney": "AU",
-  "Australia/Melbourne": "AU",
-  "Pacific/Auckland": "NZ",
-};
-
-/*
- * Which country the visitor is in, from the browser alone — the timezone
- * first, then the region on their language (`en-NG`). Nothing is sent
- * anywhere: it is a lookup on data the page already has.
- */
-export function detectCountry(): string {
-  try {
-    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone ?? "";
-    if (TZ_COUNTRY[zone]) return TZ_COUNTRY[zone];
-
-    const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
-    for (const tag of languages) {
-      const region = /[-_]([A-Za-z]{2})$/.exec(tag ?? "");
-      if (region) return region[1].toUpperCase();
-    }
-  } catch {
-    /* older engines, or a locked-down browser: the reference card stands in */
-  }
-  return "NG";
-}
-
-/** "NG" -> "Nigeria", for the flag's alt text. */
-function countryName(code: string): string {
-  try {
-    return new Intl.DisplayNames(["en"], { type: "region" }).of(code) ?? code;
-  } catch {
-    return code;
-  }
-}
-
-/**
- * The white announcement pill — `x_wd_notification_box` on odoo.com: the flag
- * on the left, the bold event name, the date a margin away, and the register
- * link stretched over the whole card. The country is detected, so the flag,
- * the event and the date follow the visitor.
+ * The white announcement pill — `x_wd_notification_box` on odoo.com: a mark on
+ * the left, the bold line, a note a margin away, and the link stretched over
+ * the whole card. Ours is the weekly sweep digest: how many signals the
+ * cadence pulled this week, and the way into the board that scores them.
  */
 function DigestPill() {
-  const [country] = useState(detectCountry);
-  const [flagOk, setFlagOk] = useState(true);
-  const event = EVENTS[country] ?? FALLBACK;
-
   return (
     <div className="od-notif">
-      <img
-        src={
-          flagOk
-            ? `https://odoocdn.com/base/static/img/country_flags/${country.toLowerCase()}.png`
-            : "/img/odoo/ng.png"
-        }
-        onError={() => setFlagOk(false)}
-        width={16}
-        height={16}
-        alt={countryName(country)}
-        className="me-[0.25rem] h-4 w-4 shrink-0 rounded-[50rem] object-cover md:ms-[0.5rem] md:me-[1rem]"
+      <CalendarDays
+        aria-hidden
+        size={16}
+        className="me-[0.25rem] shrink-0 text-[var(--od-violet)] md:ms-[0.5rem] md:me-[1rem]"
       />
-      <span className="align-middle text-start font-bold">{event.place}</span>
+      <span className="align-middle text-start font-bold">
+        This week&rsquo;s sweep &middot; 47 new signals
+      </span>
       <div className="hidden text-nowrap text-[var(--od-body)] md:ms-[1rem] md:block">
-        {event.date}
+        Liens, probate, tax sales and free sections
       </div>
       <a
-        href="#pricing"
+        href="#request"
         className="od-stretched text-nowrap text-[var(--od-violet)] no-underline md:mx-[1rem] lg:ms-[3rem]"
       >
-        Get the leads ⟶
+        Tell us what you have ⟶
       </a>
     </div>
   );
@@ -213,90 +77,31 @@ function DigestPill() {
 
 /**
  * The wall of tiles — `x_wd_apps_row` / `x_wd_app_entry`: an `<img
- * class="img-thumbnail rounded-1 mb-3">` over a truncated caption. The
- * reference's arrows and our own names sit over it, both on one layer that the
- * switch turns on.
+ * class="img-thumbnail rounded-1 mb-3">` over a truncated caption. Every tile
+ * is a door into the request form: the wall is the pitch.
  */
-function AppWall({ without }: { without: boolean }) {
+function AppWall() {
   return (
-    <div className="relative flow-root">
-      <div className="od-apps-row">
-        {/* Every tile is a door into the sign-up: the wall is the pitch, and
-            the switch above it is what a visitor reaches for next. */}
-        {SOURCES.map((source) => (
-          <a key={source.label} href="/sign-up" className="od-app-entry">
-            <figure>
-              <img
-                width={80}
-                className="od-app-icon"
-                src={`/icons/apps/${source.slug}.svg`}
-                alt={`${source.label} icon`}
-                loading="lazy"
-              />
-              <figcaption className="od-app-caption">{source.label}</figcaption>
-            </figure>
-          </a>
-        ))}
-      </div>
-
-      {/*
-        * The drawing, on its own layer over the row's exact box: the
-        * reference's sheet of arrows, then our names on the spots its own
-        * names hold.
-        */}
-      <div className={cn("od-scrawls", without && "is-on")} aria-hidden={!without}>
-        <img
-          className="od-arrows"
-          src="/img/odoo/apps_switched_arrows.svg"
-          width={1250}
-          height={729}
-          alt=""
-          loading="lazy"
-        />
-        {MARKS.map((mark) => (
-          <span
-            key={mark.label}
-            className={cn("od-scrawl", mark.align && `od-scrawl-${mark.align}`)}
-            style={{ left: `${mark.x}%`, top: `${mark.y}%` }}
-          >
-            {mark.label}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/** Odoo's "Imagine without odoo" switch — a plain Bootstrap form-switch. */
-function WithoutSwitch({
-  on,
-  onChange,
-  id,
-}: {
-  on: boolean;
-  onChange: (next: boolean) => void;
-  id: string;
-}) {
-  return (
-    <div className="od-corner">
-      <input
-        type="checkbox"
-        role="switch"
-        id={id}
-        className="od-switch"
-        checked={on}
-        onChange={(event) => onChange(event.target.checked)}
-      />
-      <label className="od-switch-label" htmlFor={id}>
-        Imagine without BIZLIT
-      </label>
+    <div className="od-apps-row">
+      {SOURCES.map((source) => (
+        <a key={source.label} href="#request" className="od-app-entry">
+          <figure>
+            <img
+              width={80}
+              className="od-app-icon"
+              src={`/icons/apps/${source.slug}.svg`}
+              alt={`${source.label} icon`}
+              loading="lazy"
+            />
+            <figcaption className="od-app-caption">{source.label}</figcaption>
+          </figure>
+        </a>
+      ))}
     </div>
   );
 }
 
 export default function SourcesBand() {
-  const [without, setWithout] = useState(false);
-
   return (
     <section
       id="sources"
@@ -306,33 +111,24 @@ export default function SourcesBand() {
       <div className="od-shape od-shape-03" aria-hidden />
 
       <Container className="relative z-[1]">
-        {/* `<div class="row justify-content-center"><div class="col-xl-9
-            col-xxl-8 text-center">` — the pill and the wall live there. */}
         <div className="mx-[-1rem] flex justify-center">
           <div className="w-full px-[1rem] text-center min-[1200px]:w-3/4 min-[1400px]:w-2/3">
             <DigestPill />
-            <AppWall without={without} />
+            <AppWall />
           </div>
         </div>
 
-        {/* `col-lg-6 pt40 text-start d-none d-lg-block` / `col-lg-6 pt40 text-end`,
-            the switch moved out to `xl`: its drawing needs the xl gutters. */}
-        <div className="flex flex-wrap items-center">
-          <div className="hidden w-full pt-[40px] text-start min-[1200px]:block min-[1200px]:w-1/2">
-            <WithoutSwitch on={without} onChange={setWithout} id="x_wd_apps_switcher" />
-          </div>
-          <div className="w-full pt-[40px] text-end min-[1200px]:w-1/2">
-            <a href="#screens" className="text-[var(--od-violet)] no-underline">
-              View all signals
-              <img
-                src="/img/odoo/secondary_arrow_sm_03.svg"
-                width={40}
-                alt=""
-                loading="lazy"
-                className="ms-[0.5rem] me-[1rem] inline-block align-top"
-              />
-            </a>
-          </div>
+        <div className="pt-[40px] text-center">
+          <a href="#services" className="text-[var(--od-violet)] no-underline">
+            See every service
+            <img
+              src="/img/odoo/secondary_arrow_sm_03.svg"
+              width={40}
+              alt=""
+              loading="lazy"
+              className="ms-[0.5rem] me-[1rem] inline-block align-top"
+            />
+          </a>
         </div>
       </Container>
     </section>

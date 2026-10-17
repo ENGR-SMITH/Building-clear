@@ -8,18 +8,18 @@ import { Container } from "./bits";
 
 const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
-    title: "Workspace",
+    title: "The service",
     links: [
-      { label: "Lead pipeline", href: "#screens" },
-      { label: "Storage engine", href: "#screens" },
-      { label: "Runner network", href: "#screens" },
-      { label: "Outreach & follow-up", href: "#screens" },
-      { label: "Deal ledger", href: "#screens" },
-      { label: "Calibration", href: "#screens" },
+      { label: "How it works", href: "#how" },
+      { label: "Services in pictures", href: "#services" },
+      { label: "What it costs", href: "#cost" },
+      { label: "Who we help", href: "#clients" },
+      { label: "Who turns up", href: "#network" },
+      { label: "Class dashboards", href: "#dashboards" },
     ],
   },
   {
-    title: "What it watches",
+    title: "What we watch for",
     links: [
       { label: "Storage liens & auctions", href: "#sources" },
       { label: "Pre-foreclosures & tax sales", href: "#sources" },
@@ -32,11 +32,10 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Get started",
     links: [
+      { label: "Send a request", href: "#request" },
+      { label: "Common questions", href: "#faq" },
       { label: "Pricing", href: "#pricing" },
-      { label: "Help", href: "#faq" },
-      { label: "Sign in", href: "/sign-in" },
-      { label: "Create an account", href: "/sign-up" },
-      { label: "Product tour", href: "#screens" },
+      { label: "Photo credits", href: "/credits.html" },
     ],
   },
 ];
@@ -91,14 +90,14 @@ export default function Footer() {
             </span>
 
             <p className="mt-5 text-[15px] leading-relaxed">
-              BIZLIT is the distress-intelligence operating desk: it detects financial
-              distress across storage, real estate, estates, commercial closures and junk,
-              scores every opportunity with four fixed engines, and routes each lead to a
-              single play — bid, wholesale, cleanout, runner-scrap or pass.
+              BIZLIT clears the buildings other people cannot face: storage units past their
+              notice, houses nobody can walk through, estates, and closed businesses. One
+              request, one written route, and the space handed back empty — contents sold as
+              your agent and the proceeds remitted to you.
             </p>
             <p className="mt-4 text-[15px] leading-relaxed">
-              Every deal is structured as revenue share, assignment or pay-after-sale —
-              nothing requires upfront cash.
+              Nothing is paid upfront. Every job is structured as consignment, assignment or
+              pay-after-sale, and the crews are paid the day the work is done.
             </p>
 
             <ul className="mt-5 flex items-center gap-4">

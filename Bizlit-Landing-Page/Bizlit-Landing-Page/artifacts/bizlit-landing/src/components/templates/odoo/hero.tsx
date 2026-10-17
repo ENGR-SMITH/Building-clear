@@ -1,49 +1,66 @@
-import { Container, Doodle, Mark, odBtn, odBtnLight } from "./bits";
+import { Container, Mark, odBtn, odBtnLight } from "./bits";
+import { RoomCompare } from "./clearance";
 
 /*
- * The odoo.com hero, to the letter: `pt-5 pb-6 text-center`, an h1 in
- * display-1 with the bold yellow stroke behind its last words, then an h2 in
- * display-3 that carries the handwritten revenue-share note — the doodled
- * arrow and two lines of Caveat, hung off the bottom-right of the highlighted
- * phrase, turned 350deg and pulled 10rem past its edge. (Our bar is fixed, so
- * the 3rem of top padding starts below it.)
+ * The top of the page, in two columns: the promise on the left, the proof of it
+ * on the right. The left column carries the display-2 line with the marker
+ * stroke behind its last words, one calm paragraph of context and the two
+ * buttons; the right column carries the room the whole service is about — the
+ * same living room furnished and then cleared, which the visitor can wipe
+ * across. Nothing else is asked for here: no handwritten note, no doodle, no
+ * second stroke. The offer they used to carry lives further down the page.
  */
+
+/** The three promises that decide whether an owner picks up. */
+const ASSURANCES = ["Nothing paid upfront", "One written agreement", "Heirs remitted 80–90%"];
 
 export default function Hero() {
   return (
-    <section className="pt-[calc(3rem+60px)] pb-[4rem] text-center">
-      <Container>
-        <h1 className="od-d1">
-          Every distress signal, <Mark>on one desk.</Mark>
-        </h1>
+    <section id="top" className="pt-[calc(3rem+80px)] pb-[3rem]">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+        <div className="grid items-center gap-[3rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-[3.5rem]">
+          {/* the promise */}
+          <div className="text-center lg:text-start">
+            <h1 className="od-d1 mt-[1.25rem] mb-[1.25rem] leading-[1.05]">
+              From cluttered to <Mark>clear, with care.</Mark>
+            </h1>
 
-        <h2 className="od-d3 relative mb-[3rem]">
-          Storage units, houses, estates and closures — distilled down to{" "}
-          <span className="od-mark-blue relative">
-            one decision.
-            <em className="od-doodle absolute end-0 top-full -mt-[1rem] -me-[10rem] hidden rotate-[350deg] lg:block">
-              <Doodle
-                src="/img/odoo/arrow_doodle_1.svg"
-                width={50}
-                className="mx-auto mb-[1rem]"
-              />
-              $0 upfront —
-              <br />
-              we only earn when a deal pays
-            </em>
-          </span>
-        </h2>
+            <p className="od-lead mt-[1.25rem] max-w-[48rem] text-[1.05rem] leading-relaxed text-[var(--od-body)]">
+              Send us a room, a unit or a whole house. We sort what is worth selling, clear the
+              rest, and hand the space back empty — and you are paid out of what it held, not the
+              other way round.
+            </p>
 
-        <div>
-          <a href="/sign-up" className={odBtn + " mb-[0.5rem] me-[1rem]"}>
-            See the scores
-            <span className="hidden md:inline"> - It&rsquo;s free</span>
-          </a>
-          <a href="#screens" className={odBtnLight + " mb-[0.5rem]"}>
-            What the desk does
-          </a>
+            <div className="mt-[2rem] flex flex-col items-center gap-[0.75rem] sm:flex-row sm:justify-center lg:justify-start">
+              <a href="#request" className={odBtn + " !text-base !px-6 !py-3 !no-underline"}>
+                Start a request
+              </a>
+              <a href="#services" className={odBtnLight + " !text-base !px-6 !py-3 !no-underline"}>
+                See the work
+              </a>
+            </div>
+
+            <ul className="mt-[1.5rem] flex flex-wrap justify-center gap-x-[1.5rem] gap-y-[0.5rem] lg:justify-start">
+              {ASSURANCES.map((line) => (
+                <li
+                  key={line}
+                  className="flex items-center gap-[0.5rem] text-[0.9375rem] font-medium text-[var(--od-ink)]"
+                >
+                  <span aria-hidden className="flex h-[7px] w-[7px] shrink-0 items-center justify-center rounded-full bg-[var(--od-orchid)]">
+                    <span className="h-[3px] w-[3px] rounded-full bg-white scale-0" />
+                  </span>
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* the proof */}
+          <figure className="m-0">
+            <RoomCompare />
+          </figure>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

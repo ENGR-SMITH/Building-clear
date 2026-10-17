@@ -1,23 +1,34 @@
 import Header from "@/components/templates/odoo/header";
 import Hero from "@/components/templates/odoo/hero";
+import { WorkflowChart } from "@/components/templates/odoo/workflow-chart";
 import SourcesBand from "@/components/templates/odoo/apps-grid";
-import { ScreensBand } from "@/components/templates/odoo/app-screens";
-import { ArrowBand, UsersBand, TestimonialBand } from "@/components/templates/odoo/proof";
-import { AiBand, DoneRightBand, FaqBand, FeaturesBand, LevelUpBand, type FaqItem } from "@/components/templates/odoo/story";
+import { DoneRightBand, FaqBand, FeaturesBand, type FaqItem } from "@/components/templates/odoo/story";
+import { ServicesGalleryBand } from "@/components/templates/odoo/sections";
+import { ClientsBand, CostBand, CrewBand, HowBand } from "@/components/templates/odoo/client";
+import { RequestBand } from "@/components/templates/odoo/request-form";
 import Cta from "@/components/templates/odoo/cta";
 import Footer from "@/components/templates/odoo/footer";
 
 /*
- * The landing page, rebuilt to odoo.com's design: the flat white header, the
- * handwriting-weight hero, then a run of grey bands (the signal wall, what the
- * desk does, the level-up panels, the workspace screens), a white AI band, the
- * arched "done right" band carrying the plan, social proof, the FAQ, and the
- * closing call to action above the aubergine footer.
+ * The landing page, in the order a visitor needs it.
  *
- * It is pitched for the distress-intelligence operating desk: sources swept on
- * cadence, four scoring engines and a master router, one decision per lead —
- * bid, wholesale, cleanout, runner-scrap or pass — and revenue-share
- * monetization that never needs upfront cash.
+ * The top is the offer and the proof of it: the promise beside the same living
+ * room furnished and cleared, then the four ways one request can go, then the
+ * signals the desk watches and the work it does in pictures.
+ *
+ * "Distress intelligence done right." is the pivot. Above it the page explains
+ * the machine; below it every band is written for the person holding the
+ * problem — how a request runs, what it costs them (nothing), who the desk
+ * works for, who turns up to do the carrying, and the questions they ask before
+ * they send anything — and then the form itself, which is the only thing on the
+ * page that has to work.
+ *
+ * Three bands the reference carries were dropped on purpose, because they
+ * stacked decoration on top of decoration: the collage of overlapping mock
+ * panels, the bare doodled arrow, and the 35-tile icon mosaic. Two more went
+ * with the rewrite: the native-AI band and the eight-stage pipeline, both of
+ * which described how the desk scores and routes work rather than what happens
+ * to a room nobody can walk through.
  *
  * The skin lives in `.theme-odoo` (src/index.css) so none of it reaches the
  * signed-in workspace, and every section it composes is in
@@ -26,52 +37,56 @@ import Footer from "@/components/templates/odoo/footer";
 
 const FAQ: FaqItem[] = [
   {
-    q: "Which assets does it cover?",
-    a: "Five classes: storage units heading to lien sale, distressed real estate, estates and probate property, commercial closures, and bulk junk or scrap. Every lead is tagged, scored and routed by its own class engine.",
+    q: "What does a clearout cost me?",
+    a: "Nothing upfront. A property clearout is free to the estate: we clear it, sell what is saleable as your agent and remit 80–90% of the net resale. If there is nothing in the building worth selling, you hear that on the walk-through instead of an invented fee.",
   },
   {
-    q: "How do the scoring engines work?",
-    a: "Each class has its own weighted rubric — brand visibility, container composition, owner motivation, title clarity and so on. The math is fixed: the same inputs always produce the same score, and the router turns the score into bid, conditional bid, contract, cleanout, scrap run or pass.",
+    q: "So how do you make money?",
+    a: "One of three ways, and which one it is gets written down before work starts: a share of the resale on a consigned clearout, an assignment fee paid by the cash buyer on a property deal, or the resale margin on a unit's contents.",
   },
   {
-    q: "What does it cost to run a deal?",
-    a: "Nothing upfront. Every deal is structured as a revenue share, a wholesaling assignment fee, or pay-after-sale — and the same-day scrap floor pays the runners and crews first so the operation never needs capital.",
+    q: "How soon can someone come out?",
+    a: "Requests are read the day they arrive and the walk-through sets the date. Jobs carrying a deadline — a closing date, a lien-sale date, a foreclosure date — are scheduled first, because a deadline is usually why the request exists at all.",
   },
   {
-    q: "What do owners and heirs actually get?",
-    a: "A written agreement and a plain-English deal: storage tenants keep a share of resale instead of getting nothing at auction, estates are cleared for free with 80–90% of net proceeds remitted, and homeowners get a cash offer through mapped investors with zero commissions.",
+    q: "What happens to the things I want to keep?",
+    a: "Anything the family wants is boxed and laid out before anything is moved. It's later settled, after a written route is agreed.",
   },
   {
-    q: "Do you handle everything encountered?",
-    a: "No. Hard vetoes out regardless of the score: biohazards, unresolvable title defects, jurisdictions requiring licensure we don't hold. Those leads get logged, code-recorded and passed to a partner.",
+    q: "Is there work you will not take on?",
+    a: "Yes. Biohazards and hazardous waste, unresolved title defects, firearms outside a licensed transfer, and any work needing a licence we do not hold. Those are referred to a vetted partner rather than attempted, and you are told which one it is.",
   },
   {
-    q: "How do the runners and crews get paid?",
-    a: "On the day the job pays. Scrap yards settle same-day, runners take 30–40% of what each run nets, and nobody is ever paid upfront. Every payout's math is published in the deal ledger.",
+    q: "Will you buy the property as well?",
+    a: "Where the numbers work, yes — through assignment to a mapped local cash buyer, taking the property as it stands, contents and all. The owner pays no commission and pays for no repairs first.",
   },
 ];
 
 export function LandingPage() {
   return (
-    <div className="theme-odoo w-full overflow-x-clip bg-white text-[var(--od-body)]">
+    <div className="theme-odoo w-full overflow-x-clip bg-white text-[var(--od-body)] px-2 sm:px-4 lg:px-8">
       <Header />
       <main>
+        {/* the offer, beside the same room furnished and cleared */}
         <Hero />
 
-        {/* the grey run — odoo.com keeps these bands contiguous */}
+        <WorkflowChart />
+
         <SourcesBand />
         <FeaturesBand />
-        <LevelUpBand />
-        <ScreensBand />
+        <ServicesGalleryBand />
 
-        <AiBand />
+        {/* the pivot: above this the machine, below it the client */}
         <DoneRightBand />
 
-        {/* white again for the proof and the close */}
-        <ArrowBand />
-        <UsersBand />
-        <TestimonialBand />
+        <HowBand />
+        <CostBand />
+        <ClientsBand />
+        <CrewBand />
         <FaqBand items={FAQ} />
+
+        {/* the one thing that has to work */}
+        <RequestBand />
         <Cta />
       </main>
       <Footer />

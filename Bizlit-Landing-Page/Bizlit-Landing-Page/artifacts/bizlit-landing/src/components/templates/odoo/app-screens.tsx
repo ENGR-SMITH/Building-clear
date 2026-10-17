@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { Boxes, Radar, Users } from "lucide-react";
+import { Boxes, Mail, Radar, Users } from "lucide-react";
 import { Badge, Td, Th } from "@/components/primitives";
 import { BarList, DeltaPill, ProgressRing } from "@/components/charts";
 import { Band, Mark } from "./bits";
@@ -13,7 +13,7 @@ import { Band, Mark } from "./bits";
  * the product itself, not the marketing page.
  */
 
-type ScreenId = "pipeline" | "engine" | "network";
+type ScreenId = "pipeline" | "engine" | "network" | "outreach";
 
 const SCREENS: { id: ScreenId; label: string; icon: ReactNode; render: () => ReactNode }[] = [
   {
@@ -33,6 +33,12 @@ const SCREENS: { id: ScreenId; label: string; icon: ReactNode; render: () => Rea
     label: "Runner network",
     icon: <Users size={14} />,
     render: () => <NetworkScreen />,
+  },
+  {
+    id: "outreach",
+    label: "Owner outreach",
+    icon: <Mail size={14} />,
+    render: () => <OutreachScreen />,
   },
 ];
 
@@ -324,6 +330,104 @@ function NetworkScreen() {
       <p className="mt-3 text-[10px] text-slate-500">
         Scrap gate rule: run only when the yard estimate clears 1.5× the runner payout plus
         dump fees.
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------ outreach */
+
+/*
+ * The contact sheet behind the outreach scripts: who was contacted, which lead
+ * they belong to, the exact offer on the table and the stage it sits at. Only
+ * qualified leads reach this list — the skip-trace spend comes after the gate.
+ */
+
+type Contact = {
+  who: string;
+  lead: string;
+  offer: string;
+  stage: "sent" | "reply" | "signed" | "pilot";
+};
+
+const CONTACTS: Contact[] = [
+  {
+    who: "Storage tenant",
+    lead: "Unit 214 · Valley Self-Storage",
+    offer: "Keeps 25% of resale",
+    stage: "reply",
+  },
+  {
+    who: "Facility manager",
+    lead: "Valley Self-Storage · 2 abandoned units",
+    offer: "Broom-clean in 48h · 20% remit",
+    stage: "pilot",
+  },
+  {
+    who: "Estate executor",
+    lead: "Est. of R. Alvarez · county case 813",
+    offer: "Cleared free · 85% of net remitted",
+    stage: "signed",
+  },
+  {
+    who: "Homeowner",
+    lead: "142 Wilson Ave · auction in 26 days",
+    offer: "Assignment offer · zero commissions",
+    stage: "sent",
+  },
+  {
+    who: "Runner applicant",
+    lead: "1.2 mi from the next pickup",
+    offer: "30–40% of net, paid same day",
+    stage: "sent",
+  },
+];
+
+const CONTACT_TONE = {
+  signed: "good",
+  reply: "info",
+  pilot: "brand",
+  sent: "neutral",
+} as const;
+
+function OutreachScreen() {
+  return (
+    <div className="p-4">
+      <div className="grid grid-cols-3 gap-3">
+        <MiniStat label="Qualified before skip-trace" value="6 of 9" />
+        <MiniStat label="Attempts cap" value="3 in 7 days" />
+        <MiniStat label="DNC checked" value="Always" />
+      </div>
+
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full min-w-[620px]">
+          <thead className="bg-slate-50">
+            <tr>
+              <Th>Who</Th>
+              <Th>Lead</Th>
+              <Th>Offer on the table</Th>
+              <Th className="text-right">Stage</Th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {CONTACTS.map((contact) => (
+              <tr key={contact.who + contact.lead}>
+                <Td className="text-xs font-medium text-slate-900">{contact.who}</Td>
+                <Td className="text-xs text-slate-600">{contact.lead}</Td>
+                <Td className="text-xs text-slate-600">{contact.offer}</Td>
+                <Td className="text-right">
+                  <Badge tone={CONTACT_TONE[contact.stage]}>{contact.stage}</Badge>
+                </Td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p className="mt-3 text-[10px] text-slate-500">
+        Message preview — homeowner: “I&rsquo;m not an agent — I buy through assignment with local
+        cash investors. If your numbers work, I can have an offer this week and you pay zero
+        commissions.”
       </p>
     </div>
   );

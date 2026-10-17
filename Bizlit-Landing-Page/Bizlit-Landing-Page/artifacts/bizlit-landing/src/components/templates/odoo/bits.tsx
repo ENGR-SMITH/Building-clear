@@ -14,6 +14,23 @@ export const odBtnLight = "od-btn od-btn-light";
 export const odBtnLg = "od-btn od-btn-primary od-btn-lg";
 export const odBtnSm = "od-btn od-btn-primary od-btn-sm";
 
+/** The surface every card in a band sits on. */
+export const CARD =
+  "rounded-[0.75rem] border border-[var(--od-border)] bg-[var(--od-surface)] p-[1.5rem]";
+
+/**
+ * The small caps line that opens a band, over its one-pixel rule — Odoo's
+ * `x_wd_subtitle`. Every band on the page starts with one.
+ */
+export function Eyebrow({ children }: { children: ReactNode }) {
+  return (
+    <p className="flex items-center gap-[0.625rem] text-[0.75rem] font-semibold tracking-[0.16em] text-[var(--od-violet)] uppercase">
+      <span aria-hidden className="h-[1px] w-[1.75rem] bg-[rgba(109,40,217,0.35)]" />
+      {children}
+    </p>
+  );
+}
+
 /**
  * A marker stroke painted behind a word — Odoo's `x_wd_*_highlight_*`.
  * The artwork keeps its drawn proportions (`background-size: contain`) and the

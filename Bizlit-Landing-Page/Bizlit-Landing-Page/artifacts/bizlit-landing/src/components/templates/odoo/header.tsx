@@ -54,9 +54,11 @@ const LINKS: { id: string; label: string; panel?: PanelGroup[] }[] = [
       },
     ],
   },
-  { id: "screens", label: "Product" },
-  { id: "pricing", label: "Pricing" },
-  { id: "faq", label: "Help" },
+  { id: "services", label: "Services" },
+  { id: "how", label: "How it works" },
+  { id: "cost", label: "What it costs" },
+  { id: "clients", label: "Who we help" },
+  { id: "request", label: "Contact" },
 ];
 function jump(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -163,18 +165,12 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* account actions */}
+          {/* the one action: reach the desk */}
           <div className="flex shrink-0 items-center gap-2">
             {/* day / night */}
             <ThemeSwitch dark={dark} onToggle={() => setDark((v) => !v)} className="me-1" />
-            <a
-              href="/sign-in"
-              className="hidden px-3 py-2 text-[15px] font-medium text-[var(--od-ink)] transition-colors hover:text-[var(--od-violet)] sm:block"
-            >
-              Sign in
-            </a>
-            <a href="/sign-up" className={odBtnSm}>
-              Start free
+            <a href="#request" className={odBtnSm}>
+              Reach us
             </a>
             <button
               type="button"
@@ -189,7 +185,7 @@ export default function Header() {
         </div>
       </Container>
 
-      {/* the sources panel */}
+      {/* the signals panel */}
       <AnimatePresence>
         {open ? (
           <motion.div
@@ -236,10 +232,10 @@ export default function Header() {
                   </p>
                   <button
                     type="button"
-                    onClick={() => go("screens")}
+                    onClick={() => go("request")}
                     className="mt-4 cursor-pointer text-sm font-semibold text-[var(--od-violet)] hover:underline"
                   >
-                    See the workspace →
+                    Tell us about the space →
                   </button>
                 </div>
               </div>
@@ -273,11 +269,11 @@ export default function Header() {
                 ))}
               </ul>
               <div className="mt-4 flex flex-col gap-2">
-                <a href="/sign-in" className="od-btn od-btn-light">
-                  Sign in
+                <a href="#request" className="od-btn od-btn-primary">
+                  Reach us
                 </a>
-                <a href="/sign-up" className="od-btn od-btn-primary">
-                  Start free
+                <a href="#how" className="od-btn od-btn-light">
+                  How it works
                 </a>
               </div>
             </Container>
